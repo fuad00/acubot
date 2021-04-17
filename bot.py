@@ -2,17 +2,18 @@ import requests
 import sqlite3
 import telebot
 import warnings
-from pathlib import Path
-
-
-tg_bot_token = "" # Example: "496545159:AAGjUrqG3f6HGChpOYkLYbblitb_TRbdbSY"
-chat_id =     # Example: -1001351824461
-
-api_key = "" # Example: "1986ad8e936ca9bf5a50fev0reebfb1tt4b3rtb22a2c8b793c1c0946b"
-host = "" # Example: "https://localhsot:3443"
+import time
 
 
 warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+
+
+tg_bot_token = "" # Example: "496545159:AAGjUrqG3f6HGChpOYkLYbblitb_TRbdbSY"
+chat_id =   # Example: -1001351824461
+
+api_key = "" # Example: "1986ad8e936ca9bf5a50fev0reebfb1tt4b3rtb22a2c8b793c1c0946b"
+host = "" # Example: "https://localhost:3443"
+recheck_sec = 600
 
 
 # init bot token
@@ -120,7 +121,7 @@ def main():
 
 
 def initdb():
-    bot.send_message(-1001355824468, """Создаём струкруту БД...""")
+    bot.send_message(chat_id, """Создаём струкруту БД...""")
     #sql2 = """SELECT * FROM count"""
     #yo = c.execute(sql2)
     #out2 = c.fetchall()
@@ -143,17 +144,20 @@ def initdb():
             sql = """insert into vuln{} (id, website, count) VALUES ('{}','{}',{})""".format(str(t+1), out[x]["id"], out[x]["name"], out[x]["count"])
             go = c.execute(sql)
             conn.commit()
-    bot.send_message(-1001355824468, """Готово. Перезайдите в программу и выберите 'Y'.""")
+    bot.send_message(chat_id, """Готово. Перезайдите в программу и выберите 'Y'.""")
     
-
+    
+    
+x = input("Вы уже работали с этой программой? (Y/n) ")
 
 looop = 0
-if Path("acu.db").is_file():
+if x == "Y" or x == "y":
     while True:
         main()
         print("loop + " + str(looop + 1)) 
         looop += 1
-else:
+        time.sleep(recheck_sec)
+elif x == "N" or x == "n":
     initdb()
     while True:
     
