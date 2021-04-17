@@ -5,7 +5,7 @@
 
 #### Написан на python 3
 
-![](https://komarev.com/ghpvc/?username=acubot&color=blue)
+![](https://komarev.com/ghpvc/?username=acubot&color=blue&label=СМОТРЕЛИ)
 
 ## Основные составляющие
 
