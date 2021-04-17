@@ -5,6 +5,7 @@
 
 #### Написан на python 3
 
+![](https://komarev.com/ghpvc/?username=acubot&color=blue)
 
 ## Основные составляющие
 
