@@ -8,11 +8,11 @@ import time
 warnings.filterwarnings('ignore', message='Unverified HTTPS request')
 
 
-tg_bot_token = "" # Example: "496545159:AAGjUrqG3f6HGChpOYkLYbblitb_TRbdbSY"
-chat_id =   # Example: -1001351824461
+tg_bot_token = ""    # Example: "496545159:AAGjUrqG3f6HGChpOYkLYbblitb_TRbdbSY"
+chat_id =            # Example: -1001351824461
 
-api_key = "" # Example: "1986ad8e936ca9bf5a50fev0reebfb1tt4b3rtb22a2c8b793c1c0946b"
-host = "" # Example: "https://localhost:3443"
+api_key = ""         # Example: "1986ad8e936ca9bf5a50fev0reebfb1tt4b3rtb22a2c8b793c1c0946b"
+host = ""            # Example: "https://localhost:3443"
 recheck_sec = 600
 
 
