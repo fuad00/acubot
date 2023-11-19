@@ -1,0 +1,36 @@
+---
+version: "3.8"
+
+services:
+  bot:
+    hostname: bot
+    build: ./bot
+    container_name: bot
+    restart: always
+    depends_on:
+      - psql
+
+  psql:
+    hostname: psql
+    build: ./psql
+    container_name: psql
+    restart: always
+    volumes:
+      - psql:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+
+  acunetix:
+    # admin@admin.com
+    # Admin123
+    image: secfa/awvs
+    init: true
+    container_name: acunetix
+    restart: unless-stopped
+    cap_add:
+      - LINUX_IMMUTABLE
+    ports:
+      - "3443:3443"
+
+volumes:
+  psql:

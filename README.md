@@ -1,43 +1,29 @@
 
-# Acunetix API + Telegram Bot API = AcuBot
+# Acunetix API + Aiogram 3 + Docker Compose = AcuBot ❤️
 
-### AcuBot - это телеграм бот для мониторинга критических уязвимостей, найденных в вашем Acunetix
+## config/install/run
 
-#### Написан на python 3
+1. Install docker:
+```bash
+apt -y update && apt -y install curl sudo git
+curl -fsSL https://get.docker.com -o install-docker.sh
+sudo sh install-docker.sh
+```
 
-![](https://komarev.com/ghpvc/?username=acubot&color=blue&label=СМОТРЕЛИ)
+2. Download and configure project:
+```bash
+git clone https://github.com/fuad00/acubot && cd acubot
+echo "bot_token = '<YOUR_TGBOT_TOKEN>'" > bot/config.py # TODO: change to .env
+```
 
-## Основные составляющие
+3. Build and run project:
+```bash
+docker compose build
+docker compose up -d # remove -d for logging (also if already running)
+```
 
-- **bot.py** - 
- Тело программы.
-
-- **requirements.txt**
-  Зависимости.
-
- ## Установка
-1. Устанавливаем сам питон:
-
-		sudo apt-get update && apt-get -y install python3 python3-pip git
-
-2. Клонируем репозиторий и устанавливаем необходимые модули:
-	
-	    git clone https://github.com/fuad00/acubot && cd acubot && pip3 install -r requirements.txt
-	
-3. Редактируем переменные строки в `bot.py` на строках с 8 по 12:
-
-|Переменная| Тип |  Описание |
-|--|--|--|
-| `tg_bot_token` | str | Токен телеграм бота, берём у BotFather|
-| `chat_id` | int |Id чата или юзера, куда будут приходить вулны |
-| `api_key` | str | Токен API акунетикса, берем из настроек аку|
-| `host` | str | URL до твоего акунетикса, `https://ip:port` |
-| `recheck_sec` | int |Частота обращения к API, рекомендуется 600 сек|
-
-## Примечание
-
-### Ну да, нагавнокодил малёха, и что с того? 
-
-1. Протестировано на Acunetix 13.x 
-
-2. Идеи/предложения приветствуются
+## Support
+<details>
+    <summary>btc</summary>
+	<code>bc1q90ma5sgmh39fkl29xahdh822tnf4hexxfsqguq</code>
+</details>
