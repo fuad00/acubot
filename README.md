@@ -1,7 +1,7 @@
 
-# Acunetix API + Aiogram 3 + Docker Compose = AcuBot ❤️
+# Acunetix API + Aiogram 3 + Docker = AcuBot ❤️
 
-## config/install/run
+## Config & Install & Run
 
 1. Install docker:
 ```bash
@@ -19,7 +19,7 @@ echo "bot_token = '<YOUR_TGBOT_TOKEN>'" > bot/config.py # TODO: change to .env
 3. Build and run project:
 ```bash
 docker compose build
-docker compose up -d # remove -d for logging (also if already running)
+docker compose up -d # remove '-d' for logs output in real time
 ```
 
 ## Support
