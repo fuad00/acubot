@@ -9,6 +9,11 @@ services:
     restart: always
     depends_on:
       - psql
+    args:
+      - BOT_TOKEN=${BOT_TOKEN}
+    networks:
+      acu_net:
+        ipv4_address: 172.72.72.3
 
   psql:
     hostname: psql
@@ -17,8 +22,14 @@ services:
     restart: always
     volumes:
       - psql:/var/lib/postgresql
+    args:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWD=${POSTGRES_PASSWD}
     ports:
       - "5432:5432"
+    networks:
+      acu_net:
+        ipv4_address: 172.72.72.2
 
   acunetix:
     # admin@admin.com
@@ -34,3 +45,11 @@ services:
 
 volumes:
   psql:
+
+networks:
+  acu_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.72.72.0/16
+          gateway: 172.72.72.1
