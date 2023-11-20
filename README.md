@@ -12,9 +12,9 @@ sudo sh install-docker.sh
 
 # Download and configure project
 git clone https://github.com/fuad00/acubot && cd acubot
-echo "BOT_TOKEN="579013110:AAGS6inF_Paste_Your_Bot_Token"
+echo 'BOT_TOKEN="579013110:AAGS6inF_Paste_Your_Bot_Token"
 POSTGRES_DB="acubot"
-POSTGRES_PASSWD="ChangeMeLater"" > .env
+POSTGRES_PASSWD="ChangeMeLater"' > .env
 
 # Build and run project
 docker compose build
