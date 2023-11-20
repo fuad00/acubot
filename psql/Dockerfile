@@ -31,4 +31,4 @@ RUN echo "host    all        all     172.72.72.0/16       md5" >> /etc/postgresq
 RUN sed -i 's/Etc\/UTC/Europe\/Moscow/' /etc/postgresql/$(ls /etc/postgresql/)/main/postgresql.conf
 
 
-ENTRYPOINT ["/bin/bash", "-c", "service postgresql start"]
+ENTRYPOINT ["/bin/bash", "-c", "service postgresql start && tail -f /dev/null"]
