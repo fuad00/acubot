@@ -4,27 +4,30 @@ version: "3.8"
 services:
   bot:
     hostname: bot
-    build: ./bot
+    build: 
+      context: ./bot
+      args:
+        BOT_TOKEN: ${BOT_TOKEN}
     container_name: bot
     restart: always
     depends_on:
       - psql
-    args:
-      - BOT_TOKEN=${BOT_TOKEN}
+
     networks:
       acu_net:
         ipv4_address: 172.72.72.3
 
   psql:
     hostname: psql
-    build: ./psql
+    build: 
+      context: ./psql
+      args:
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_PASSWD: ${POSTGRES_PASSWD}
     container_name: psql
     restart: always
     volumes:
       - psql:/var/lib/postgresql
-    args:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_PASSWD=${POSTGRES_PASSWD}
     ports:
       - "5432:5432"
     networks:
