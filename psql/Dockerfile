@@ -20,7 +20,7 @@ USER postgres
 RUN service postgresql start &&\
     createdb "${POSTGRES_DB}" &&\
     psql -c "alter user postgres with password '${POSTGRES_PASSWD}';" &&\
-    psql hashdog < 'init.sql'
+    psql "${POSTGRES_DB}" < 'init.sql'
 
 # Change working user
 USER root
