@@ -1,5 +1,5 @@
 
-# Acunetix API + Aiogram 3 + Docker = AcuBot ❤️
+# Template of Dockerized aiogram3 + postgreSQL project with .env future
 
 ## Config & Install & Run
 
