@@ -31,13 +31,16 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWD}
       POSTGRES_DB: ${POSTGRES_DB}
       TZ: Europe/Moscow
+
     networks:
       acu_net:
         ipv4_address: 172.72.72.2
 
 
   acunetix:
-    build: .
+    hostname: acunetix
+    build: 
+      context: ./bot
     container_name: acunetix
     restart: unless-stopped
     cap_add:
@@ -47,6 +50,7 @@ services:
     environment:
       - ACUNETIX_EMAIL=${ACUNETIX_EMAIL}
       - ACUNETIX_PASSWORD=${ACUNETIX_PASSWORD}
+
     networks:
       acu_net:
         ipv4_address: 172.72.72.3
