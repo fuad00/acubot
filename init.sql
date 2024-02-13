@@ -16,3 +16,4 @@ CREATE TABLE user_settings (
     tgid             BIGINT NOT NULL UNIQUE,
     notifyonsuccess  boolean NOT NULL DEFAULT 1
 );
+

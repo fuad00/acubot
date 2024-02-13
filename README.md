@@ -26,3 +26,9 @@ docker compose up --build -d
     <summary>btc</summary>
 	<code>bc1qy0utklyuffvkz25sfx5vtydy4e0pgagmvajalc</code>
 </details>
+
+
+## Todo
+
+1. push generated acunetix api key to psql database
+2. add some bot basics and logic
