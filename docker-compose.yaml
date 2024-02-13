@@ -15,7 +15,7 @@ services:
 
     networks:
       acu_net:
-        ipv4_address: 172.72.72.3
+        ipv4_address: 172.72.72.4
 
   psql:
     hostname: psql
