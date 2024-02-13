@@ -40,7 +40,7 @@ services:
   acunetix:
     hostname: acunetix
     build: 
-      context: ./bot
+      context: ./acunetix
     container_name: acunetix
     restart: unless-stopped
     cap_add:
