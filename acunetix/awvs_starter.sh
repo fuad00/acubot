@@ -15,7 +15,6 @@ password=${ACUNETIX_PASSWORD}
 sleep 15
 
 
-
 # assuming that script will retrive token
 token=$(/bin/bash /home/acunetix/.acunetix/change_credentials.sh ${email} ${password} | grep "GREP_ME" | cut -c 8- )
 
@@ -34,4 +33,4 @@ else
 fi
 
 # not sure about that
-# tail -f /dev/null
+tail -f /dev/null
