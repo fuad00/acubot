@@ -7,6 +7,15 @@ password=${ACUNETIX_PASSWORD}
 #   exit 1
 # fi
 
+
+# HELLO from entypoint...
+/bin/sh /awvs_start.sh
+
+# Just testing
+sleep 10
+
+
+
 # assuming that script will retrive token
 token=$(/bin/bash /home/acunetix/.acunetix/change_credentials.sh ${email} ${password} | grep "GREP_ME" | cut -c 8- )
 
