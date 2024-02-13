@@ -6,15 +6,14 @@
 #### Installation:
 ```bash
 # Install docker
-apt -y update && apt -y install curl sudo git
+apt -y update && apt -y install curl sudo git nano
 curl -fsSL https://get.docker.com -o install-docker.sh
 sudo sh install-docker.sh
 
 # Download and configure project
 git clone https://github.com/fuad00/acubot && cd acubot
-echo 'BOT_TOKEN=579013110:AAGS6inF_Paste_Your_Bot_Token
-POSTGRES_DB=acubot
-POSTGRES_PASSWD=ChangeMeLater' > .env
+cp .env.example .env
+nano .env # Edit for production
 
 # Build and run project
 docker compose up --build -d

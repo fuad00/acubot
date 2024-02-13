@@ -1,0 +1,6852 @@
+swagger: "2.0"
+info:
+  title: Acunetix Scanner API
+  description: >
+    The Acunetix Scanner API allows you to access and manage Scan Targets, Scans, Vulnerabilities, Reports and other resources within an Acunetix Vulnerability Scanner deployment in a simple, programmatic manner using conventional HTTP requests. The API's endpoints are intuitive and powerful, allowing you to easily retrieve information and execute actions.
+
+    <br/>Scan Targets will constitute the base for accessing any Scan-related resource such as Scans, Reports, Alerts and Crawl results. Therefore, upon deletion of a Scan Target, all associated resource will also be deleted with it.
+
+    <br/>Visit [www.acunetix.com](https://www.acunetix.com/) to learn more about Acunetix Vulnerability Scanner.
+
+    <h2>Authentication via API Key</h2>
+
+    <p>All authentication requests made to the Acunetix Scanner API must include the <code>X-Auth</code> HTTP Header.</p>
+    <table style="border: 2px solid black; width: 40%; padding: 10px">
+      <tr><th style="border: 2px solid black;padding: 10px;background-color: #000000;color: #ffffff">Location</th><th style="border: 2px solid black;padding: 10px;background-color: #000000;color: #ffffff">Header</th></tr>
+      <tr><td style="border: 2px solid black;padding: 10px;text-align: center">Name</td><td style="border: 2px solid black;padding: 10px;text-align: center">X-Auth</td></tr>
+      <tr><td style="border: 2px solid black;padding: 10px;text-align: center">Value</td><td style="border: 2px solid black;padding: 10px;text-align: center">[API Key]</td></tr>
+    </table><br/><br/>
+    <p><br/>Email: <a href="mailto:support@acunetix.com">support@acunetix.com</a>
+    <br/>Web: <a href="https://www.acunetix.com/support">https://www.acunetix.com/support</a>
+    <br/>License: <a href="https://www.acunetix.com/ssa">Acunetix Service Agreement</a></p>
+
+    <br/><br/><h2>About the Base URL for all API endpoints</h2>
+    <p>This document defines the Base URL as being <a href="https://127.0.0.1:3443/api/v1">https://127.0.0.1:3443/api/v1</a>. However, you will need to change the URL depending on the ip address of your Acunetix machine if the API calls will be made from a different machine.</p>
+    <br/><p>Specifically for <strong>Acunetix Online</strong>, the Base URL is <a href="https://online.acunetix.com/api/v1">https://online.acunetix.com/api/v1</a>.<br/><br/>
+  contact:
+    name: ""
+  version: ''
+host: 127.0.0.1:3443
+basePath: /api/v1
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+
+  /users:
+    get:
+      summary: Users
+      description: >
+        Returns a list of *Users*
+      operationId: get_users
+      tags:
+      - ChildUsers
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: List of Users
+          schema:
+            $ref: "#/definitions/ChildUserListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: User
+      description: >
+        Create **User**
+      operationId: add_user
+      tags:
+      - ChildUsers
+      parameters:
+      - in: body
+        name: body
+        description: User to create
+        required: true
+        schema:
+          $ref: "#/definitions/ChildUser"
+      - in: query
+        name: send_email
+        required: false
+        type: boolean
+      security:
+      - scanner_authorization: []
+      responses:
+        201:
+          description: User created
+          headers:
+            Location:
+              description: User URI
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/ChildUser"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /users/delete:
+    post:
+      summary: Remove Users
+      description: >
+        Remove **Users**
+      operationId: remove_users
+      parameters:
+      - in: body
+        name: body
+        description: UserIdList to remove
+        required: true
+        schema:
+          $ref: "#/definitions/ChildUserIdList"
+      tags:
+      - ChildUsers
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Users deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /users/enable:
+    post:
+      summary: Enable Users
+      description: >
+        Enable **Users**
+      operationId: enable_users
+      parameters:
+      - in: body
+        name: body
+        description: UserIdList to enable
+        required: true
+        schema:
+          $ref: "#/definitions/ChildUserIdList"
+      tags:
+      - ChildUsers
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Users enabled
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /users/disable:
+    post:
+      summary: Disable Users
+      description: >
+        Disable **Users**
+      operationId: disable_users
+      parameters:
+      - in: body
+        name: body
+        description: UserIdList to disable
+        required: true
+        schema:
+          $ref: "#/definitions/ChildUserIdList"
+      tags:
+      - ChildUsers
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Users disabled
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /users/{user_id}:
+    parameters:
+    - name: user_id
+      in: path
+      required: true
+      type: string
+      format: uuid
+    get:
+      summary: User
+      description: >
+        List **User** properties
+      operationId: get_user
+      tags:
+      - ChildUsers
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: User properties
+          schema:
+            $ref: "#/definitions/ChildUser"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: User
+      description: >
+        Delete **User**
+      operationId: remove_user
+      tags:
+      - ChildUsers
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: User deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: User
+      description: >
+        Modify **User**
+      operationId: update_user
+      tags:
+      - ChildUsers
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: User to modify
+        required: true
+        schema:
+          $ref: "#/definitions/ChildUser"
+      responses:
+        204:
+          description: User modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /user_groups:
+    get:
+      summary: User Groups
+      description: >
+        Returns a list of **User Groups**
+      operationId: get_user_groups
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - in: query
+        name: extended
+        type: boolean
+      responses:
+        200:
+          description: List of User Groups
+          schema:
+            $ref: "#/definitions/UserGroupsList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: User Groups
+      description: >
+        Create a new **User Group**
+      operationId: create_user_group
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: User Group to create
+        required: true
+        schema:
+          $ref: "#/definitions/UserGroup"
+      responses:
+        200:
+          description: User Group created
+          schema:
+            $ref: "#/definitions/UserGroupDetails"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /user_groups/{user_group_id}:
+    get:
+      summary: User Group
+      description: >
+        Returns a **User Group**
+      operationId: get_user_group
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: user_group_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+        description: The User Group ID which will be retrieved
+      responses:
+        200:
+          description: User Group
+          schema:
+            $ref: "#/definitions/UserGroupDetails"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: User Group
+      description: >
+        Modify a **User Group**
+      operationId: update_user_group
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: user_group_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+        description: The User Group ID which will be updated
+      - in: body
+        name: body
+        description: User Group to modify
+        required: true
+        schema:
+          $ref: "#/definitions/UserGroup"
+      responses:
+        204:
+          description: User group modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: User Group
+      description: >
+        Delete a **User Group**
+      operationId: remove_user_group
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: user_group_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+        description: The User Group ID which will be deleted
+      - in: query
+        name: force_delete
+        description: Delete group connection to the users
+        required: false
+        type: boolean
+      responses:
+        204:
+          description: User Group deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /user_groups/{user_group_id}/users:
+    post:
+      summary: Add Users to a User Group
+      description: >
+        Add Users to a User Group
+      operationId: add_users_to_user_group
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: user_group_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+        description: The User Group ID to which the users will be added
+      - name: body
+        in: body
+        required: true
+        description: User IDs to add to the User Group
+        schema:
+          $ref: "#/definitions/ChildUserIdList"
+      responses:
+        200:
+          description: Users added to the User Group
+          schema:
+            $ref: "#/definitions/UserToUserGroupDetails"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Remove Users from a User Group
+      description: >
+        Remove Users from a User Group
+      operationId: remove_users_from_user_group
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: user_group_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+        description: The User Group ID from which the users will be removed
+      - name: body
+        in: body
+        required: true
+        description: User IDs to remove from the User Group
+        schema:
+          $ref: "#/definitions/ChildUserIdList"
+      responses:
+        204:
+          description: Users removed from User Group
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /user_groups/{user_group_id}/roles:
+    get:
+      summary: List all Role Mappings for the User Group
+      description: List all Role Mappings for the User Group
+      operationId: get_user_group_role_mappings
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: user_group_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+        description: The User Group ID for which the roles will be listed
+    post:
+      summary: Add Role Mappings to a User Group
+      description: >
+        Add Role Mappings to a User Group
+      operationId: add_role_mappings_to_user_group
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: user_group_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+        description: The User Group ID to which the roles will be added
+      - name: body
+        in: body
+        required: true
+        description: Role IDs to add to the User Group
+        schema:
+          $ref: "#/definitions/RoleMappingList"
+      responses:
+        200:
+          description: Roles added to the User Group
+          schema:
+            $ref: "#/definitions/UserGroupRoleMappings"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Remove Role Mappings from a User Group
+      description: >
+        Remove Role Mappings from a User Group
+      operationId: remove_role_mappings_from_user_group
+      tags:
+      - UserGroups
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: user_group_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+        description: The User Group ID from which the roles will be removed
+      - name: body
+        in: body
+        required: true
+        description: Role Mapping IDs to remove from the User Group
+        schema:
+          $ref: "#/definitions/RoleMappingIdList"
+      responses:
+        204:
+          description: Roles removed from User Group
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /roles:
+    get:
+      summary: Roles
+      description: >
+        Returns a list of **Roles**
+      operationId: get_roles
+      tags:
+      - Roles
+      security:
+      - scanner_authorization: []
+      parameters:
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - in: query
+        name: extended
+        type: boolean
+      responses:
+        200:
+          description: List of Roles
+          schema:
+            $ref: "#/definitions/RolesList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Roles
+      description: >
+        Create a new **Role**
+      operationId: create_role
+      tags:
+      - Roles
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: Role to create
+        required: true
+        schema:
+          $ref: "#/definitions/Role"
+      responses:
+        200:
+          description: Role created
+          schema:
+            $ref: "#/definitions/RoleDetails"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /roles/permissions:
+    get:
+      summary: Permissions
+      description: >
+        Returns a list of **Permissions**
+      operationId: get_permissions
+      tags:
+      - Roles
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: List of Permissions
+          schema:
+            $ref: "#/definitions/PermissionsList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /roles/{role_id}:
+    get:
+      summary: Role
+      description: >
+        Returns a **Role**
+      operationId: get_role
+      tags:
+      - Roles
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: role_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+      responses:
+        200:
+          description: Role
+          schema:
+            $ref: "#/definitions/RoleDetails"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: Role
+      description: >
+        Modify a **Role**
+      operationId: update_role
+      tags:
+      - Roles
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: role_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+      - in: body
+        name: body
+        description: Role to modify
+        required: true
+        schema:
+          $ref: "#/definitions/Role"
+      responses:
+        204:
+          description: Role modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Role
+      description: >
+        Delete a **Role**
+      operationId: remove_role
+      tags:
+      - Roles
+      security:
+      - scanner_authorization: []
+      parameters:
+      - name: role_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+      - in: query
+        name: force_delete
+        required: false
+        type: boolean
+      responses:
+        204:
+          description: Role deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /config/agents/registration_token:
+    get:
+      summary: Registration Token
+      description: >
+        Returns a **Registration Token**
+      operationId: get_registration_token
+      tags:
+      - Agents
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Registration Token
+          schema:
+            $ref: "#/definitions/AgentRegistrationToken"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Registration Token
+      description: >
+        Delete a **Registration Token**
+      operationId: remove_registration_token
+      tags:
+      - Agents
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Registration Token deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      # this will generate a token, but if there is already a token, it will be deleted first
+      summary: Generate or regenerate Token
+      description:
+      operationId: generate_registration_token
+      tags:
+      - Agents
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: New Agent request
+        required: true
+        schema:
+          $ref: "#/definitions/NewAgentRegistrationToken"
+      responses:
+        200:
+          description: Registration Token
+          schema:
+            $ref: "#/definitions/AgentRegistrationToken"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /excluded_hours_profiles:
+    get:
+      summary: Excluded Hours Profiles
+      description: >
+        Returns a list of **Excluded Hours Profiles**
+      operationId: get_excluded_hours_profiles
+      tags:
+      - ExcludedHours
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: List of Excluded Hours Profiles
+          schema:
+            $ref: "#/definitions/ExcludedHoursProfilesList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      security:
+      - scanner_authorization: []
+      summary: Create Excluded Hours Profile
+      description: >
+        Creates a new **Excluded Hours Profile**
+      operationId: create_excluded_hours_profile
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/ExcludedHoursProfile"
+      tags:
+      - ExcludedHours
+      responses:
+        201:
+          description: Excluded Hours Profile created
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /excluded_hours_profiles/{excluded_hours_id}:
+    parameters:
+    - $ref: "#/parameters/excludedHoursIdParameter"
+    get:
+      summary: Excluded Hours Profile
+      description: >
+        Returns a list of **Excluded Hours Profile** properties
+      operationId: get_excluded_hours_profile
+      tags:
+      - ExcludedHours
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Excluded Hours Profile properties
+          schema:
+            $ref: "#/definitions/ExcludedHoursProfile"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      security:
+      - scanner_authorization: []
+      summary: Excluded Hours Profile
+      description: >
+        Modifies an **Excluded Hours Profile**
+      operationId: modify_excluded_hours_profile
+      tags:
+      - ExcludedHours
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/ExcludedHoursProfile"
+      responses:
+        203:
+          description: Excluded Hours Profile modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      security:
+      - scanner_authorization: []
+      summary: Excluded Hours Profile
+      description: >
+        Deletes an **Excluded Hours Profile**
+      operationId: remove_excluded_hours_profile
+      tags:
+      - ExcludedHours
+      responses:
+        204:
+          description: Excluded Hours Profile deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/check_connection:
+    post:
+      summary: Issue Tracker check connection
+      description: >
+        Tests the connection to an **Issue Tracker**
+      operationId: check_connection
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: Issue Tracker configuration
+        required: true
+        schema:
+          $ref: "#/definitions/IssueTrackerConfig"
+      responses:
+        200:
+          description: Issue Tracker connection status
+          schema:
+            $ref: "#/definitions/IssueTrackerConnectionStatus"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/check_projects:
+    post:
+      summary: Issue Tracker Projects
+      description: >
+        Requests an **Issue Tracker**'s **Projects**
+      operationId: check_projects
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: Issue Tracker configuration
+        required: true
+        schema:
+          $ref: "#/definitions/IssueTrackerConfig"
+      responses:
+        200:
+          description: Issue Tracker Projects
+          schema:
+            $ref: "#/definitions/IssueTrackerProjects"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/check_issue_types:
+    post:
+      summary: Issue Tracker Issue Types
+      description: >
+        Requests **Issue Types** of an **Issue Tracker** **Project**
+      operationId: check_issue_types
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: Issue Tracker configuration
+        required: true
+        schema:
+          $ref: "#/definitions/IssueTrackerConfig"
+      responses:
+        200:
+          description: Issue Tracker Project Issue Types
+          schema:
+            $ref: "#/definitions/IssueTrackerIssueTypes"
+        default:
+          description: Issue Tracker error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/collections:
+    post:
+      summary: Issue Tracker get collections
+      description: >
+        Get a list of TFS collections
+      operationId: get_collections
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: Issue Tracker configuration
+        required: true
+        schema:
+          $ref: "#/definitions/IssueTrackerConfig"
+      responses:
+        200:
+          description: Issue Tracker connection status
+          schema:
+            $ref: "#/definitions/IssueTrackerCollections"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/custom_fields:
+    post:
+      summary: Issue Tracker get a list of custom fields
+      description: Get a list of custom fields
+      operationId: get_custom_fields
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: Issue Tracker configuration
+        required: true
+        schema:
+          $ref: "#/definitions/IssueTrackerConfig"
+      responses:
+        200:
+          description: Issue Tracker connection status
+          schema:
+            $ref: "#/definitions/IssueTrackerCustomFields"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers:
+    get:
+      summary: Issue Trackers
+      description: >
+        Returns a list of **Issue Trackers**
+      operationId: get_issue_trackers
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Issue Trackers list
+          schema:
+            $ref: "#/definitions/IssueTrackerList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Create Issue Tracker
+      description: >
+        Creates a new **Issue Tracker**
+      operationId: create_issue_tracker_entry
+      security:
+      - scanner_authorization: []
+      tags:
+      - IssueTrackers
+      parameters:
+      - in: body
+        name: body
+        description: Issue Tracker configuration
+        required: true
+        schema:
+          $ref: "#/definitions/IssueTrackerEntry"
+      responses:
+        201:
+          description: Issue Tracker created
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/{issue_tracker_id}:
+    parameters:
+    - $ref: "#/parameters/issueTrackerIdParameter"
+    get:
+      summary: Issue Tracker details
+      description: >
+        Returns a list of **Issue Tracker** properties
+      operationId: get_issue_tracker_entry
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Issue Tracker properties
+          schema:
+            $ref: "#/definitions/IssueTrackerEntry"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Delete Issue Tracker entry
+      description: >
+        Deletes an **Issue Tracker**
+      operationId: delete_issue_tracker_entry
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Issue Tracker deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: Issue Tracker
+      description: >
+        Modifies an  **Issue Tracker**
+      operationId: update_issue_tracker_entry
+      tags:
+      - IssueTrackers
+      parameters:
+      - in: body
+        name: body
+        description: Issue Tracker configuration
+        required: true
+        schema:
+          $ref: "#/definitions/IssueTrackerEntry"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Issue Tracker modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/{issue_tracker_id}/check_connection:
+    parameters:
+    - $ref: "#/parameters/issueTrackerIdParameter"
+    get:
+      summary: Issue Tracker details
+      description: >
+        Returns a list of **Issue Tracker** properties
+      operationId: issue_tracker_entry_check_connection
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Issue Tracker connection status
+          schema:
+            $ref: "#/definitions/IssueTrackerConnectionStatus"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/{issue_tracker_id}/collections:
+    parameters:
+    - $ref: "#/parameters/issueTrackerIdParameter"
+    get:
+      summary: Issue Tracker Collections (TFS)
+      description: >
+        Requests an **Issue Tracker**'s **Collections**
+      operationId: issue_tracker_entry_get_collections
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Issue Tracker Collections
+          schema:
+            $ref: "#/definitions/IssueTrackerCollections"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/{issue_tracker_id}/custom_fields:
+    parameters:
+    - $ref: "#/parameters/issueTrackerIdParameter"
+    get:
+      summary: Issue Tracker Custom Fields
+      description: >
+        Requests an **Issue Tracker**'s **Custom fields**
+      operationId: issue_tracker_entry_get_custom_fields
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Issue Tracker Custom Fields
+          schema:
+            $ref: "#/definitions/IssueTrackerCustomFields"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/{issue_tracker_id}/projects:
+    parameters:
+    - $ref: "#/parameters/issueTrackerIdParameter"
+    get:
+      summary: Issue Tracker Projects
+      description: >
+        Requests an **Issue Tracker**'s **Projects**
+      operationId: issue_tracker_entry_get_projects
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Issue Tracker Projects
+          schema:
+            $ref: "#/definitions/IssueTrackerProjects"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/{issue_tracker_id}/projects/{project_id}/issue_types:
+    parameters:
+    - $ref: "#/parameters/issueTrackerIdParameter"
+    - $ref: "#/parameters/projectIdParameter"
+    get:
+      summary: Issue Tracker Projects
+      description: >
+        Requests an **Issue Tracker**'s **Projects**
+      operationId: issue_tracker_entry_get_issue_types_by_project_id
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Issue Tracker Projects
+          schema:
+            $ref: "#/definitions/IssueTrackerProjects"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /issue_trackers/{issue_tracker_id}/projects/issue_types:
+    parameters:
+    - $ref: "#/parameters/issueTrackerIdParameter"
+    - $ref: "#/parameters/projectQIdParameter"
+    get:
+      summary: Issue Tracker Projects
+      description: >
+        Requests an **Issue Tracker**'s **Projects**
+      operationId: issue_tracker_entry_get_issue_types
+      tags:
+      - IssueTrackers
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Issue Tracker Projects
+          schema:
+            $ref: "#/definitions/IssueTrackerProjects"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /report_templates:
+    get:
+      summary: Report Templates
+      description: >
+        Returns a list of **Report Templates**
+      operationId: get_report_templates
+      tags:
+      - Reports
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: Report Templates list
+          schema:
+            $ref: "#/definitions/ReportTemplateList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /reports:
+    get:
+      summary: Reports
+      description: >
+        Returns a list of **Reports**.
+        The returned list will be paginated if the number of elements
+        exceeds 100
+      operationId: get_reports
+      tags:
+      - Reports
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: Reports list
+          schema:
+            $ref: "#/definitions/ReportListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Reports
+      description: >
+        Generates a **Report**
+      operationId: generate_new_report
+      tags:
+      - Reports
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/NewReport"
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        201:
+          description: Report generated
+          headers:
+            Location:
+              description: Report URL
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/Report"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /reports/delete:
+    post:
+      summary: Delete reports
+      description: Delete reports
+      operationId: remove_reports
+      tags:
+      - Reports
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/ReportIdList"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Deleted Reports
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /reports/{report_id}:
+    parameters:
+    - $ref: "#/parameters/reportIdParameter"
+    get:
+      summary: Report
+      description: >
+        Returns a list of a **Report**'s properties
+      operationId: get_report
+      tags:
+      - Reports
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: Report properties
+          schema:
+            $ref: "#/definitions/Report"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Report
+      description: >
+        Deletes a **Report**
+      operationId: remove_report
+      tags:
+      - Reports
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Report deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /reports/{report_id}/repeat:
+    parameters:
+    - $ref: "#/parameters/reportIdParameter"
+    post:
+      summary: Re-generate Report
+      description: >
+        Re-generates a **Report**
+      operationId: repeat_report
+      tags:
+      - Reports
+      security:
+      - scanner_authorization: []
+      responses:
+        201:
+          description: Report re-generated
+          headers:
+            Location:
+              description: Re-generated Report URI
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/Report"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /reports/download/{descriptor}:
+    parameters:
+    - $ref: "#/parameters/descriptor"
+    get:
+      operationId: download_report
+      tags:
+      - Reports
+      responses:
+        200:
+          description: "The report file"
+          schema:
+            type: file
+  /export_types:
+    get:
+      summary: Export Types
+      description: >
+        Returns a list of **Export Types**
+      operationId: get_export_types
+      tags:
+      - Reports
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Export Types list
+          schema:
+            $ref: "#/definitions/ExportTypesList"
+  /exports:
+    post:
+      summary: Export
+      description: >
+        **Exports** one or more **Export Sources**
+      operationId: export
+      tags:
+      - Reports
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/NewExport"
+      security:
+      - scanner_authorization: []
+      responses:
+        201:
+          description: Export properties
+          headers:
+            Location:
+              description: Exported Source URI
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/Export"
+        409:
+          description: >
+            Export Source cannot be used with specified Export Type
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /exports/{export_id}:
+    parameters:
+    - $ref: "#/parameters/exportIdParameter"
+    get:
+      summary: Export
+      description: >
+        Returns a ist of an **Export**'s properties
+      operationId: get_export
+      tags:
+      - Reports
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Export properties
+          schema:
+            $ref: "#/definitions/Export"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Export
+      description: >
+        Deletes an **Export**
+      operationId: remove_export
+      tags:
+      - Reports
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Deleted Export
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /exports/delete:
+    post:
+      summary: Delete reports
+      description: Delete reports
+      operationId: remove_exports
+      tags:
+      - Reports
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/ReportIdList"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Deleted Exports
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/vulnerabilities:
+    parameters:
+    - $ref: "#/parameters/scanIdParameter"
+    - $ref: "#/parameters/scanResultId"
+    get:
+      summary: Scan Result Vulnerabilities
+      description: >
+        Returns a list of **Vulnerabilities** found during a **Scan**
+      operationId: get_scan_vulnerabilities
+      tags:
+      - Results
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Vulnerabilities list
+          schema:
+            $ref: "#/definitions/VulnerabilityListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/vulnerabilities/{vuln_id}:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    - $ref: "#/parameters/vulnerabilityIdParameter"
+    get:
+      summary: Scan Result Vulnerability
+      description: Returns a **Vulnerability**'s details
+      operationId: get_scan_vulnerability_detail
+      tags:
+      - Results
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: >
+            Vulnerability details
+          schema:
+            $ref: "#/definitions/VulnerabilityDetails"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/vulnerabilities/{vuln_id}/http_response:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    - $ref: "#/parameters/vulnerabilityIdParameter"
+    get:
+      summary: Vulnerability
+      description: >
+        Returns a list of **Vulnerability** details
+      operationId: get_scan_session_vulnerability_http_response
+      tags:
+      - Results
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: File containing the HTTP response
+          schema:
+            type: file
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/vulnerabilities/{vuln_id}/status:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    - $ref: "#/parameters/vulnerabilityIdParameter"
+    put:
+      summary: Vulnerability status
+      description: >
+        Updates the status of a **Vulnerability**
+      operationId: set_scan_session_vulnerability_status
+      tags:
+      - Results
+      parameters:
+      - in: body
+        name: body
+        description: Vulnerability status
+        required: true
+        schema:
+          $ref: "#/definitions/VulnerabilityStatus"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Vulnerability status updated
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/vulnerabilities/{vuln_id}/recheck:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    - $ref: "#/parameters/vulnerabilityIdParameter"
+    put:
+      summary: Re-check Vulnerability
+      description: >
+        Re-checks a **Vulnerability**
+      operationId: recheck_scan_session_vulnerability
+      tags:
+      - Results
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/VulnerabilityRecheck"
+      security:
+      - scanner_authorization: []
+      responses:
+        201:
+          description: Re-check Scan scheduled
+          headers:
+            Location:
+              description: Scan URI
+              type: string
+              format: url
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/vulnerabilities/recheck:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    post:
+      summary: Re-check Vulnerabilities
+      description: >
+        Re-checks a list of **Vulnerabilities**
+      operationId: recheck_scan_session_vulnerabilities
+      tags:
+      - Results
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/VulnerabilitiesRecheck"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Re-check Scan/s scheduled
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/vulnerability_types:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    get:
+      summary: Scan Result Vulnerability Types
+      description: >
+        Returns **Vulnerability Types** found during a **Scan**
+      operationId: get_scan_vulnerability_types
+      tags:
+      - Results
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Vulnerability Types list
+          schema:
+            $ref: "#/definitions/VulnerabilityTypeSessionsCountResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/technologies:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    get:
+      summary: Scan Result Technologies Found
+      description: >
+        Returns **Technologies** found during a **Scan**
+      operationId: get_scan_technologies
+      tags:
+      - Results
+      parameters:
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Technologies list
+          schema:
+            $ref: "#/definitions/TechnologiesListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/technologies/{tech_id}/locations/{loc_id}/vulnerabilities:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    - $ref: "#/parameters/technologyIdParameter"
+    - $ref: "#/parameters/locationIdParameter"
+    get:
+      summary: Scan Result Technology Vulnerabilities
+      description: >
+        Returns **Vulnerabilities** found during a **Scan** for a specific **Technology**
+      operationId: get_scan_technology_vulnerabilities
+      tags:
+      - Results
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Vulnerabilities list
+          schema:
+            $ref: "#/definitions/VulnerabilityListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/crawldata:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    get:
+      summary: Scan Result Crawl Data
+      description: >
+        Search **Crawl Data** of a **Scan**
+
+
+        The response will return a `Location` header with a URI in the format of
+        `/scans/{scan_id}/results/{result_id}/crawldata/{loc_id}/children`.
+        If no search query (`q`) parameter is passed, the response will return the URI
+        of the **Crawl Root**
+      operationId: search_crawl_data
+      tags:
+      - Results
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        302:
+          description: Crawl Root URI
+          headers:
+            Location:
+              description: Crawl location URI
+              type: string
+              format: url
+        200:
+          description: Locations list
+          schema:
+            $ref: "#/definitions/CrawlLocationListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/crawldata/{loc_id}:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    - $ref: "#/parameters/locationIdParameter"
+    get:
+      summary: Scan Result Crawl Data Location
+      description: >
+        Returns a list of **Crawl Data** **Location** properties
+      operationId: get_location_details
+      tags:
+      - Results
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Location properties
+          schema:
+            $ref: "#/definitions/CrawlLocationDetails"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/crawldata/{loc_id}/children:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    - $ref: "#/parameters/locationIdParameter"
+    get:
+      summary: Scan Result Crawl Data Location Children
+      description: >
+        Returns a list of **Children** of the **Location** identified by `loc_id`
+      operationId: get_location_children
+      tags:
+      - Results
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Locations
+          schema:
+            $ref: "#/definitions/CrawlLocationListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/crawldata/{loc_id}/vulnerabilities:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    - $ref: "#/parameters/locationIdParameter"
+    - $ref: "#/parameters/cursorParameter"
+    - $ref: "#/parameters/limitParameter"
+    - $ref: "#/parameters/sortParameter"
+    get:
+      summary: Scan Result crawl data vulnerabilities
+      description: >
+        Returns a list of **Vulnerabilities** for the specified **Location**
+      operationId: get_location_vulnerabilities
+      tags:
+      - Results
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Vulnerabilities list
+          schema:
+            $ref: "#/definitions/VulnerabilityListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results/{result_id}/statistics:
+    parameters:
+    - $ref: "#/parameters/scanResultId"
+    - $ref: "#/parameters/scanIdParameter"
+    get:
+      summary: Scan Statistics
+      description: >
+        Returns a list of **Scan Statistics**
+      operationId: get_statistics
+      tags:
+      - Results
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Scan statistics
+          schema:
+            $ref: "#/definitions/ScanStatistics"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scanning_profiles:
+    get:
+      summary: Scan Types (Scanning Profiles)
+      description: >
+        Returns a list of **Scan Types** (Scanning Profiles)
+      operationId: get_scanning_profiles
+      tags:
+      - ScanningProfiles
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: List of Scan Types (Scanning Profiles)
+          schema:
+            $ref: "#/definitions/ScanningProfilesResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Create Scan Type (Scanning Profile)
+      description: >
+        Creates a new **Scan Type** (Scanning Profile)
+      operationId: create_scanning_profile
+      tags:
+      - ScanningProfiles
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/ScanningProfile"
+      security:
+      - scanner_authorization: []
+      responses:
+        201:
+          description: Scan Type (Scanning Profile) added
+          headers:
+            Location:
+              description: Scan Type (Scanning Profile) URI
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/ScanningProfile"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scanning_profiles/{scanning_profile_id}:
+    parameters:
+    - $ref: "#/parameters/scanningProfileId"
+    get:
+      summary: Scan Type (Scanning Profile)
+      description: >
+        Returns a list of a **Scan Type**'s (Scanning Profile) properties
+      operationId: get_scanning_profile
+      tags:
+      - ScanningProfiles
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Scan Types (Scanning Profiles)
+          schema:
+            $ref: "#/definitions/ScanningProfile"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Scan Type (Scanning Profile)
+      description: >
+        Deletes a **Scan Type** (Scanning Profile)
+      operationId: delete_scanning_profile
+      tags:
+      - ScanningProfiles
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Scan Type (Scanning Profile) deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: Scan Type (Scanning Profile)
+      description: >
+        Modifies **Scan Type** (Scanning Profile)
+      operationId: update_scanning_profile
+      tags:
+      - ScanningProfiles
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/ScanningProfile"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Scan Type (Scanning Profile) modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/continuous_scan/list:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    - $ref: "#/parameters/cursorParameter"
+    - $ref: "#/parameters/limitParameter"
+    - $ref: "#/parameters/sortParameter"
+    get:
+      summary: List Target Continuous Scans
+      operationId: get_continuous_scans
+      tags:
+      - Scans
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Continuous Scan status
+          schema:
+            $ref: "#/definitions/ContinuousScanListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans:
+    get:
+      summary: Scans
+      description: >
+        Returns a list of **Scans**.
+        The returned list will be paginated if the number of elements
+        exceeds 100. Additionally, a combination of `cursors`, `queries`
+        and `limits` can be used to extract a subset of all the scans.
+
+
+        ----
+
+        #### Get **all** scans
+
+        `curl --request GET --url "https://localhost:3443/api/v1/scans" --header "X-Auth: API_KEY" --header "Content-type: application/json"`
+
+
+        #### Get the **2nd** (`cursor`) up to **4th** (`limit` - exclusive) list of scans
+
+        `curl --request GET --url "https://localhost:3443/api/v1/scans?c=2&l=1" --header "X-Auth: API_KEY" --header "Content-type: application/json"`
+
+        #### Get the **2nd** (`cursor`) up to **4th** (`limit` - exclusive) list of scans that have high severity vulnerabilities for a specific target
+
+        `curl --request GET --url "https://localhost:3443/api/v1/scans?c=2&l=1&q=threat:3;target_id:TARGET_ID" --header "X-Auth: API_KEY" --header "Content-type: application/json"`
+      operationId: get_scans
+      tags:
+      - Scans
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Scans list
+          schema:
+            $ref: "#/definitions/ScanListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Schedule Scan
+      description: >
+        **Schedule a scan** to run, by optionally specifying the target, schedule,
+        scan type, report and recurrence.
+
+        > **Note:** The Scan ID is not provided in the response body. It is instead
+        provided in the `Location` response header.
+
+
+        > **Note:** For any cURL requests, POST data inside the `--data` parameter
+        may need to have double-quotes escaped (`" -> \"`)
+
+
+        ----
+
+
+
+        #### Schedule a "Full Scan" for a **Scan Target** to run _immediately_
+
+
+        `curl --request POST --url "https://acunetix-installation/api/v1/scans" --header "X-Auth: {API_KEY}" --header "Content-Type: application/json" --data '{"target_id": "{TARGET_UUID}", "profile_id": "11111111-1111-1111-1111-111111111111", "schedule": {"disable":false,"start_date":null,"time_sensitive":false}}'`
+
+
+        #### Schedule a "Crawl Only" scan for a **Scan Target** to run _every third_ Thursday
+
+
+        `curl --request POST --url "https://acunetix-installation/api/v1/scans" --header "X-Auth: {API_KEY}" --header "Content-Type: application/json" --data "{"target_id":"{TARGET_ID}","profile_id":"11111111-1111-1111-1111-111111111111","schedule":{"disable":false,"recurrence":"DTSTART:20180112T003000Z\nFREQ=WEEKLY;INTERVAL=1;BYDAY=TH","time_sensitive":true}}"`
+      operationId: schedule_scan
+      tags:
+      - Scans
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/Scan"
+      security:
+      - scanner_authorization: []
+      responses:
+        201:
+          description: Scan scheduled
+          headers:
+            Location:
+              description: Scan URI containing the base API URL along with the new Scan ID
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/ScanItemResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/trigger:
+    parameters:
+    - $ref: "#/parameters/scanIdParameter"
+    post:
+      summary: Trigger Scan a new scan session
+      description: >
+        Triggers a new **Scan session**
+      operationId: trigger_scan
+      tags:
+      - Scans
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Scan aborted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/abort:
+    parameters:
+    - $ref: "#/parameters/scanIdParameter"
+    post:
+      summary: Abort Scan
+      description: >
+        Aborts a **Scan**
+      operationId: abort_scan
+      tags:
+      - Scans
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Scan aborted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/resume:
+    parameters:
+    - $ref: "#/parameters/scanIdParameter"
+    post:
+      summary: Resume Scan
+      description: >
+        Resumes a **Scan**
+      operationId: resume_scan
+      tags:
+      - Scans
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Scan resumed
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}:
+    parameters:
+    - $ref: "#/parameters/scanIdParameter"
+    get:
+      summary: Scan
+      description: >
+        Returns a list of a **Scan**'s properties
+      operationId: get_scan
+      tags:
+      - Scans
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Scan properties
+          schema:
+            $ref: "#/definitions/ScanItemResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: Scan
+      description: >
+        Modifies a **Scan**
+      operationId: update_scan
+      tags:
+      - Scans
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/Scan"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Scan modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Scan
+      description: >
+        Deletes a **Scan**
+      operationId: remove_scan
+      tags:
+      - Scans
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Scan deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /scans/{scan_id}/results:
+    parameters:
+    - $ref: "#/parameters/scanIdParameter"
+    get:
+      security:
+      - scanner_authorization: []
+      summary: Scan Results
+      description: >
+        Returns **Scan Results** across multiple **Scan** runs
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/sortParameter"
+      operationId: get_scan_result_history
+      tags:
+      - Scans
+      responses:
+        200:
+          description: Scan Results
+          schema:
+            $ref: "#/definitions/ScanResultListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /target_groups:
+    get:
+      summary: Target Groups
+      description: >
+        Returns a list of **Target Groups**
+      operationId: get_groups
+      parameters:
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/sortParameter"
+      tags:
+      - TargetGroups
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: List of Target Groups
+          schema:
+            $ref: "#/definitions/TargetGroupsListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Create Target Group
+      description: >
+        Creates a **Target Group**
+      operationId: add_group
+      tags:
+      - TargetGroups
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/TargetGroup"
+      security:
+      - scanner_authorization: []
+      responses:
+        201:
+          description: Target Group created
+          headers:
+            Location:
+              description: Target Group URI
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/TargetGroup"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /target_groups/{group_id}:
+    parameters:
+    - $ref: "#/parameters/groupIdParameter"
+    get:
+      summary: Target Group
+      description: >
+        Returns a list of **Target Group** properties
+      operationId: get_group
+      tags:
+      - TargetGroups
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: Target Group
+          schema:
+            $ref: "#/definitions/TargetGroup"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Delete Target Group
+      description: >
+        Deletes a **Target Group**
+      operationId: delete_group
+      tags:
+      - TargetGroups
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Target Group deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: Target Group
+      description: >
+        Modifies **Target Group**
+      operationId: change_group
+      tags:
+      - TargetGroups
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/TargetGroup"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Target Group modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /target_groups/delete:
+    post:
+      summary: Target Group
+      description: >
+        deletes **Target Groups**
+      operationId: delete_groups
+      tags:
+      - TargetGroups
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/TargetGroupIdList"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Target Group modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /target_groups/{group_id}/targets:
+    parameters:
+    - $ref: "#/parameters/groupIdParameter"
+    get:
+      summary: Targets in Target Group
+      description: >
+        Returns a list of **Targets** in a Target Group
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      tags:
+      - TargetGroups
+      operationId: list_targets
+      responses:
+        200:
+          description: Targets in Target Group
+          schema:
+            $ref: "#/definitions/TargetIdList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: Targets in Target Group
+      description: >
+        Modifies one or more **Targets** in a **Target Group**
+      tags:
+      - TargetGroups
+      security:
+      - scanner_authorization: []
+      operationId: change_targets
+      parameters:
+      - in: body
+        name: body
+        description: Targets modify in Target Group
+        required: true
+        schema:
+          $ref: "#/definitions/GroupChangeTargetIdList"
+      responses:
+        204:
+          description: Targets in Target Group modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Assign Targets to Target Group
+      description: >
+        Assigns one or more **Targets** to a **Target Group**
+      tags:
+      - TargetGroups
+      security:
+      - scanner_authorization: []
+      operationId: set_targets
+      parameters:
+      - in: body
+        name: body
+        description: Targets to assign to Target Group
+        required: true
+        schema:
+          $ref: "#/definitions/TargetIdList"
+      responses:
+        204:
+          description: Targets assigned to Target Group
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets:
+    get:
+      summary: Targets
+      description: >
+        Returns a list of **Targets**.
+        The returned list will be paginated if the number of elements
+        exceeds 100
+      operationId: get_targets
+      tags:
+      - Targets
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Target list
+          schema:
+            $ref: "#/definitions/TargetListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Create Target
+      description: >
+        Creates a **Target**
+      operationId: add_target
+      tags:
+      - Targets
+      parameters:
+      - in: body
+        name: body
+        description: Target properties
+        required: true
+        schema:
+          $ref: "#/definitions/Target"
+      security:
+      - scanner_authorization: []
+      responses:
+        201:
+          description: Target created
+          headers:
+            Location:
+              description: Target URI
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/TargetItemResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/add:
+    post:
+      summary: Creates multiple targets
+      description: >
+        Creates multiple targets
+      operationId: add_targets
+      tags:
+      - Targets
+      parameters:
+      - in: body
+        name: body
+        description: Targets properties
+        required: true
+        schema:
+          $ref: "#/definitions/AddTargetsDescriptor"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Targets created
+          headers:
+            Location:
+              description: Target URI
+              type: string
+              format: url
+          schema:
+            $ref: "#/definitions/TargetItemResponseList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/delete:
+    post:
+      summary: Removes multiple targets
+      description: >
+        Removes multiple targets
+      operationId: remove_targets
+      tags:
+      - Targets
+      parameters:
+      - in: body
+        name: body
+        description: Targets
+        required: true
+        schema:
+          $ref: "#/definitions/TargetIdList"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Targets deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/cvs_export:
+    get:
+      summary: Targets CVS Export
+      description: >
+        Downloads the targets list in CVS format
+      parameters:
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      operationId: cvs_export
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      produces:
+      - application/octet-stream
+      responses:
+        200:
+          description: Targets CVS export file
+          schema:
+            type: file
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Target
+      description: >
+        Returns a list of **Target** properties
+      operationId: get_target
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: Target properties
+          schema:
+            $ref: "#/definitions/TargetItemResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: Target
+      description: >
+        Modifies a **Target**
+      operationId: update_target
+      tags:
+      - Targets
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/Target"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Target modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Target
+      description: >
+        Deletes **Target**
+      operationId: remove_target
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Target deleted
+        200:
+          description: Target deleted
+          schema:
+            $ref: "#/definitions/TargetDeletionNotification"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/continuous_scan:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Target Continuous Scan status
+      description: >
+        Returns the **Continuous Scan** status of a Target
+      operationId: get_continuous_scan_status
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Continuous Scan status
+          schema:
+            $ref: "#/definitions/ContinuousScanMode"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Continuous Scan status
+      description: >
+        Sets the **Continuous Scan** status of a Target
+      operationId: set_continuous_scan_status
+      tags:
+      - Targets
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/ContinuousScanMode"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Continuous Scan status set
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/sensor/reset:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    post:
+      summary: Target AcuSensor reset secret
+      description: >
+        Resets the **AcuSensor** secret of a Target
+      operationId: reset_sensor_secret
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/SensorSecretContainer"
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Target AcuSensor secret reset
+          schema:
+            $ref: "#/definitions/SensorSecretContainer"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/sensors/{sensor_type}/{sensor_secret}:
+    parameters:
+    - $ref: "#/parameters/sensorTypeParameter"
+    - $ref: "#/parameters/sensorSecretParameter"
+    get:
+      summary: Target AcuSensor download
+      description: >
+        Downloads the generated **AcuSensor** file of a Target
+      operationId: download_sensor
+      tags:
+      - Targets
+      produces:
+      - application/octet-stream
+      responses:
+        200:
+          description: Target AcuSensor file
+          schema:
+            type: file
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/allowed_hosts:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Target Allowed Hosts
+      description: >
+        Returns a list of **Allowed Hosts** of a Target
+      operationId: get_allowed_hosts
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Allowed Hosts list
+          schema:
+            $ref: "#/definitions/AllowedHosts"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Target Allowed Hosts
+      description: >
+        Adds **Allowed Hosts** to a Target
+      operationId: add_allowed_host
+      tags:
+      - Targets
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/TargetIdContainer"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Allowed Host added
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/allowed_hosts/{allowed_target_id}:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    - $ref: "#/parameters/allowedTargetIdParameter"
+    delete:
+      summary: Target Allowed Host
+      description: >
+        Deletes an **Allowed Host** from a Target
+      operationId: remove_allowed_host
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Allowed Host deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/configuration:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Target Configuration
+      description: >
+        Returns a **Target's** configuration
+      operationId: get_target_configuration
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: Target Configuration properties
+          schema:
+            $ref: "#/definitions/TargetConfiguration"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: Target Configuration
+      description: >
+        Modifies a **Target's** configuration
+      operationId: configure_target
+      tags:
+      - Targets
+      parameters:
+      - name: configuration
+        in: body
+        description: >
+          Target Configuration (partial configuration will get merged with
+          existing configuration)
+        required: false
+        schema:
+          $ref: "#/definitions/TargetConfiguration"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Target Configuration modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/configuration/login_sequence/download:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Target Login Sequence download
+      description: >
+        Downloads the **Login Sequence** file of a Target
+      operationId: download_login_sequence
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      produces:
+      - application/octet-stream
+      responses:
+        200:
+          description: Login Sequence
+          schema:
+            type: file
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/configuration/login_sequence:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Target Login Sequence
+      description: >
+        Returns a list of a Target's **Login Sequence** properties
+      operationId: get_login_sequence
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Login Sequence properties
+          schema:
+            $ref: "#/definitions/UploadedFile"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Target Login Sequence
+      description: >
+        Sets a **Login Sequence** for a Target
+
+
+        After the operation completes the Login Sequence file (`.lsr`
+        format) needs to be uploaded via a POST request to the URL returned in
+        the response using `application/octet-stream` Content-Type within a
+        timeout period. To apply the Login Sequence once uploaded, [update the
+        Target's configuration](/#configure-target)
+      operationId: set_login_sequence
+      tags:
+      - Targets
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/FileUploadDescriptor"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Login Sequence temporary file upload URL
+          schema:
+            $ref: "#/definitions/UploadLocationResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Target Login Sequence
+      description: >
+        Un-sets and Deletes **Login Sequence** for a Target
+      operationId: delete_login_sequence
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Login Sequence unset and deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/configuration/client_certificate:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Target Client Certificate
+      description: >
+        Returns a list of a Target's **Client Certificate** properties
+      operationId: get_client_certificate
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: >
+            Client Certificate properties
+          schema:
+            $ref: "#/definitions/UploadedFile"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Target Client Certificate
+      description: >
+        Sets a **Client Certificate** for a Target.
+
+        The operation requires two steps to be completed. A successful request to this API call will return a temporary URL which MUST be used (within a timeout period) to upload the certificate file.
+
+        Once this API Call generates a successful response (containing the ad-hoc upload URL), a **second** POST request must be made:
+
+        The Client Certificate (`PKCS12` format) file needs to be uploaded via a POST request to the URL (returned in the first response) using an `application/octet-stream` Content-Type, within the timeout period.
+
+        To apply the Client Certificate once uploaded, [update the Target's configuration](#configure_target).
+      operationId: set_client_certificate
+      tags:
+      - Targets
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/FileUploadDescriptor"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Temporary Client Certificate file upload URL
+          schema:
+            $ref: "#/definitions/UploadLocationResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Target Client Certificate
+      description: >
+        Un-sets and Deletes a **Client Certificate** and its password for a Target
+      operationId: delete_client_certificate
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Client Certificate and password unset and deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/configuration/imports:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Target Import
+      description: >
+        Returns a list of a Target's **Import** properties
+      operationId: get_imported_files
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Import properties
+          schema:
+            $ref: "#/definitions/UploadedFilesResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Target Import
+      description: >
+        Adds an **Import File** to a Target to be used with each scan.
+
+        The operation requires two steps to be completed. A successful request to this API call will return a temporary URL which MUST be used to upload the import file within a timeout period.
+
+
+        Once this API Call generates a successful response (containing the ad-hoc upload URL), a **second** POST request must be made:
+
+
+        The Import (Acunetix HTTP Sniffer, Telerik Fiddler SAZ, PortSwigger Burp State/Export XML, HTTP Archive, and Plain Text formats) file needs to be uploaded via a POST request to the URL (returned in the first response) using an `application/octet-stream` Content-Type, within the timeout period.
+
+
+        The file upload request is limited to 1048576 bytes (1MB) in size per request. Hence, any file larger than this size has to be fragmented into multiple POST requests. Once a 201 response is received, the next request can be sent with the rest of the file (up to 1MB), which would return a 202 response. This process is repeated until the whole file is uploaded, and the response is 204.
+
+
+        To apply the Import File once uploaded, [update the Target's configuration](#configure_target).
+      operationId: upload_import_file
+      tags:
+      - Targets
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/FileUploadDescriptor"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Import temporary file upload URL
+          schema:
+            $ref: "#/definitions/UploadLocationResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/configuration/imports/{import_id}:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    - name: import_id
+      in: path
+      type: string
+      format: uuid
+      required: true
+    delete:
+      summary: Target Import
+      description: >
+        Un-sets and Delete **Import** for a Target
+      operationId: delete_imported_file
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Import unset and deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/configuration/blr/{import_id}:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    - name: import_id
+      in: path
+      type: string
+      format: uuid
+      required: true
+  /targets/{target_id}/configuration/exclusions:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Get target excluded path
+      description: >
+        Returns a list of a excluded paths
+      operationId: get_excluded_paths
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Excluded path list
+          schema:
+            $ref: "#/definitions/ExcludedPathList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Update target excuded list
+      description: >
+        Updates the list of the excluded paths
+      operationId: update_excluded_paths
+      tags:
+      - Targets
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: Ecluded path list configuration update data
+        required: true
+        schema:
+          $ref: "#/definitions/ExcludedPathListUpdate"
+      responses:
+        204:
+          description: Excluded path list updated
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/technologies:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Latest Technologies Found On Target
+      description: >
+        Returns **Technologies** found during a **Scan**
+      operationId: get_target_technologies
+      tags:
+      - Results
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Technologies list
+          schema:
+            $ref: "#/definitions/TechnologiesListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/technologies/{tech_id}/vulnerabilities:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    - $ref: "#/parameters/technologyIdParameter"
+    get:
+      summary: Technology Vulnerabilities For This Target
+      description: >
+        Returns **Vulnerabilities** found during a **Scan** for a specific **Technology**
+      operationId: get_scan_technology_vulnerabilities
+      tags:
+      - Results
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Vulnerabilities list
+          schema:
+            $ref: "#/definitions/VulnerabilityListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /vulnerabilities:
+    get:
+      summary: Vulnerabilities
+      description: >
+        Returns a list of *all* **Vulnerabilities** found
+      operationId: get_vulnerabilities
+      tags:
+      - Vulnerabilities
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Vulnerabilities list
+          schema:
+            $ref: "#/definitions/VulnerabilityListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /vulnerabilities/{vuln_id}:
+    parameters:
+    - $ref: "#/parameters/vulnerabilityIdParameter"
+    get:
+      summary: Vulnerability
+      description: >
+        Returns a list of **Vulnerability** details
+      operationId: get_vulnerability_details
+      tags:
+      - Vulnerabilities
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: Vulnerability details list
+          schema:
+            $ref: "#/definitions/VulnerabilityDetails"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /vulnerabilities/{vuln_id}/http_response:
+    parameters:
+    - $ref: "#/parameters/vulnerabilityIdParameter"
+    get:
+      summary: Vulnerability
+      description: >
+        Returns a list of **Vulnerability** details
+      operationId: get_vulnerability_http_response
+      tags:
+      - Vulnerabilities
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        200:
+          description: File containing the HTTP response
+          schema:
+            type: file
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /vulnerabilities/{vuln_id}/recheck:
+    parameters:
+    - $ref: "#/parameters/vulnerabilityIdParameter"
+    put:
+      summary: Re-check Vulnerability
+      description: >
+        Re-checks for Target Vulnerability
+      operationId: recheck_vulnerability
+      tags:
+      - Vulnerabilities
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/VulnerabilityRecheck"
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        201:
+          description: Scan scheduled
+          headers:
+            Location:
+              description: Scheduled Scan URI
+              type: string
+              format: url
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /vulnerabilities/recheck:
+    put:
+      summary: Re-check Vulnerability
+      description: >
+        Re-checks for Target Vulnerability
+      operationId: recheck_vulnerabilities
+      tags:
+      - Vulnerabilities
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/VulnerabilitiesRecheck"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Scan/s scheduled
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /vulnerabilities/{vuln_id}/status:
+    parameters:
+    - $ref: "#/parameters/vulnerabilityIdParameter"
+    put:
+      summary: Vulnerability status
+      description: >
+        Updates the status of a **Vulnerability**
+      operationId: set_vulnerability_status
+      tags:
+      - Vulnerabilities
+      parameters:
+      - in: body
+        name: body
+        description: Vulnerability status
+        required: true
+        schema:
+          $ref: "#/definitions/VulnerabilityStatus"
+      security:
+      - scanner_authorization: []
+      - jwt_user_impersonation: []
+      responses:
+        204:
+          description: Vulnerability status updated
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /vulnerability_groups:
+    get:
+      security:
+      - scanner_authorization: []
+      operationId: get_vulnerability_groups
+      tags:
+      - Vulnerabilities
+      parameters:
+      - $ref: "#/parameters/groupTypeParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      responses:
+        200:
+          description: Vulnerability Type details list
+          schema:
+            $ref: "#/definitions/VulnerabilityGroupsResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /vulnerability_types:
+    get:
+      summary: Vulnerability Types
+      description: >
+        Returns a list of **Vulnerability Types** with a count for each
+        Vulnerability Type encountered
+      operationId: get_vulnerability_types
+      tags:
+      - Vulnerabilities
+      parameters:
+      - $ref: "#/parameters/cursorParameter"
+      - $ref: "#/parameters/limitParameter"
+      - $ref: "#/parameters/viewTypeParameter"
+      - $ref: "#/parameters/queryParameter"
+      - $ref: "#/parameters/sortParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Vulnerability Type details list
+          schema:
+            $ref: "#/definitions/VulnerabilityTypeTargetsCountResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /vulnerability_types/{vt_id}:
+    get:
+      summary: Vulnerability Type
+      description: >
+        Returns a list of **Vulnerability Types** with a count for each
+        Vulnerability Type encountered
+      operationId: get_vulnerability_type
+      tags:
+      - Vulnerabilities
+      parameters:
+      - $ref: "#/parameters/vulnerabilityTypeIdParameter"
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Vulnerability Type properties
+          schema:
+            $ref: "#/definitions/VulnerabilityType"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /wafs/check_connection:
+    post:
+      summary: WAF check connection
+      description: >
+        Tests the connection to a WAF
+      operationId: check_connection
+      tags:
+      - WAFUploader
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        description: WAF configuration
+        required: true
+        schema:
+          $ref: "#/definitions/WAFConfig"
+      responses:
+        200:
+          description: WAF connection status
+          schema:
+            $ref: "#/definitions/WAFConnectionStatus"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /wafs:
+    get:
+      summary: WAFs
+      description: >
+        Returns a list of **WAFs**
+      operationId: get_wafs
+      tags:
+      - WAFUploader
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: WAFs list
+          schema:
+            $ref: "#/definitions/WAFsList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Create a WAF
+      description: >
+        Creates a new **WAF**
+      operationId: create_waf_entry
+      security:
+      - scanner_authorization: []
+      tags:
+      - WAFUploader
+      parameters:
+      - in: body
+        name: body
+        description: WAF configuration
+        required: true
+        schema:
+          $ref: "#/definitions/WAFEntry"
+      responses:
+        200:
+          description: WAF created
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /wafs/{waf_id}:
+    parameters:
+    - $ref: "#/parameters/WAFIdParameter"
+    get:
+      summary: WAF details
+      description: >
+        Returns a list of **WAF** properties
+      operationId: get_waf_entry
+      tags:
+      - WAFUploader
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: WAF properties
+          schema:
+            $ref: "#/definitions/WAFEntry"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Delete WAF entry
+      description: >
+        Deletes a **WAF**
+      operationId: delete_waf_entry
+      tags:
+      - WAFUploader
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: WAF deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    patch:
+      summary: WAF
+      description: >
+        Modifies a  **WAF**
+      operationId: update_waf_entry
+      tags:
+      - WAFUploader
+      parameters:
+      - in: body
+        name: body
+        description: WAF configuration
+        required: true
+        schema:
+          $ref: "#/definitions/WAFEntry"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: WAF modified
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /wafs/{waf_id}/check_connection:
+    parameters:
+    - $ref: "#/parameters/WAFIdParameter"
+    get:
+      summary: WAF connection
+      description: >
+        Check a particular WAF connection
+      operationId: waf_entry_check_connection
+      tags:
+      - WAFUploader
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: WAF connection status
+          schema:
+            $ref: "#/definitions/WAFConnectionStatus"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /workers:
+    get:
+      summary: Workers
+      description: >
+        Returns a list of registered **Workers**
+      security:
+      - scanner_authorization: []
+      operationId: get_workers
+      tags:
+      - WorkerManager
+      responses:
+        200:
+          description: List of Workers
+          schema:
+            $ref: "#/definitions/WorkerList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /workers/{worker_id}:
+    parameters:
+    - $ref: "#/parameters/worker_id"
+    get:
+      summary: Worker
+      description: >
+        Returns a list of **Worker** properties
+      operationId: get_worker
+      security:
+      - scanner_authorization: []
+      tags:
+      - WorkerManager
+      responses:
+        200:
+          description: Worker properties
+          schema:
+            $ref: "#/definitions/Worker"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    delete:
+      summary: Worker
+      description: >
+        Deletes a **Worker**
+      operationId: delete_worker
+      security:
+      - scanner_authorization: []
+      tags:
+      - WorkerManager
+      responses:
+        204:
+          description: Worker deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /workers/{worker_id}/ignore_errors:
+    parameters:
+    - $ref: "#/parameters/worker_id"
+    delete:
+      summary: Worker
+      description: Ignores Errors for a **Worker**
+      operationId: delete_worker_ignore_errors
+      security:
+      - scanner_authorization: []
+      tags:
+      - WorkerManager
+      responses:
+        204:
+          description: Resource deleted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /workers/{worker_id}/authorize:
+    parameters:
+    - $ref: "#/parameters/worker_id"
+    post:
+      summary: Authorize Worker
+      description: >
+        Authorizes a **Worker**
+      operationId: authorize_worker
+      security:
+      - scanner_authorization: []
+      tags:
+      - WorkerManager
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/EmptyObject"
+      responses:
+        204:
+          description: Worker authorization successful
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /workers/{worker_id}/reject:
+    parameters:
+    - $ref: "#/parameters/worker_id"
+    post:
+      summary: Reject Worker
+      description: >
+        Rejects a **Worker**
+      operationId: reject_worker
+      tags:
+      - WorkerManager
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/EmptyObject"
+      responses:
+        204:
+          description: Worker rejection successful
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /workers/{worker_id}/check:
+    parameters:
+    - $ref: "#/parameters/worker_id"
+    post:
+      summary: Check Worker connection
+      description: >
+        Checks a **Worker**'s connection
+      operationId: check_worker
+      tags:
+      - WorkerManager
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/EmptyObject"
+      responses:
+        200:
+          description: Worker connection successful
+          schema:
+            $ref: "#/definitions/WorkerExtended"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /workers/{worker_id}/upgrade:
+    parameters:
+    - $ref: "#/parameters/worker_id"
+    post:
+      summary: Upgrade Worker
+      description: >
+        Upgrade a **Worker** to main engine build number
+      operationId: upgrade_worker
+      security:
+      - scanner_authorization: []
+      tags:
+      - WorkerManager
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/EmptyObject"
+      responses:
+        204:
+          description: Worker upgrade successful
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /workers/{worker_id}/rename:
+    parameters:
+    - $ref: "#/parameters/worker_id"
+    post:
+      summary: Rename Worker
+      description: >
+        Renames a **Worker**
+      operationId: rename_worker
+      tags:
+      - WorkerManager
+      security:
+      - scanner_authorization: []
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/WorkerDescription"
+      responses:
+        204:
+          description: Worker renamed
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+  /targets/{target_id}/configuration/workers:
+    parameters:
+    - $ref: "#/parameters/targetIdParameter"
+    get:
+      summary: Target assigned Workers
+      description: >
+        Returns **Workers** assigned to a Target
+      operationId: get_workers_assigned_to_target
+      tags:
+      - WorkerManager
+      security:
+      - scanner_authorization: []
+      responses:
+        200:
+          description: Workers assigned to Target
+          schema:
+            $ref: "#/definitions/WorkerList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+    post:
+      summary: Assign Workers to Target
+      description: >
+        Assigns **Workers** to a **Target**. Up to *one Worker-type* (web or network) can be assigned to a *single Target*
+      operationId: assign_workers_to_target
+      tags:
+      - WorkerManager
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/WorkerIdList"
+      security:
+      - scanner_authorization: []
+      responses:
+        204:
+          description: Worker assigned to Target
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorDescriptionResponse"
+securityDefinitions:
+
+  scanner_authorization:
+    description: >
+      All authenticated requests made to the Acunetix Scanner API must include
+      the `X-Auth` HTTP header.
+    type: apiKey
+    name: X-Auth
+    in: header
+  scanner_authorization_cookie:
+    type: cookie
+    name: ui_session
+    in: header
+definitions:
+
+  # ----------------------- Agent definitions [TODO agents]-----------------------
+
+  ReportTemplate:
+    type: object
+    properties:
+      name:
+        description: Report Template name
+        type: string
+      group:
+        type: string
+      template_id:
+        description: Report Template unique identifier
+        type: string
+        format: uuid
+      accepted_sources:
+        type: array
+        items:
+          type: string
+          enum:
+          - ignore_entry
+          - un_ignore_entry
+          - blacklist_ip
+          - un_blacklist_ip
+          - blacklist_second_level_domain
+          - un_blacklist_second_level_domain
+          - blacklist_top_level_domain
+          - un_blacklist_top_level_domain
+          - blacklist_organization
+          - un_blacklist_organization
+    required:
+    - template_id
+  ScanningProfile:
+    type: object
+    required:
+    - checks
+    properties:
+      name:
+        description: Scan Type (Scanning Profile) name
+        type: string
+        maxLength: 256
+        minLength: 1
+      profile_id:
+        description: Scan Type (Scanning Profile) unique identifier
+        type: string
+        format: uuid
+      sort_order:
+        description: Sort order value
+        type: integer
+        minimum: 1
+        default: 1000
+      custom:
+        description: Describes if the Scan Type (Scanning Profile) is user-editable (read only)
+        type: boolean
+      checks:
+        description: Vulnerability test names obtained from /checks.json; array must contain names of checks which are NOT to be performed; if array contains the name of a group of checks, then the entire group of checks will NOT be performed; consider the example ["wvs/Scripts","wvs/httpdata/opensearch-httpdata.js"] -  this will exclude the entire "wvs/Scripts" group of tests, and will also exclude the "wvs/httpdata/opensearch-httpdata.js" specific test.
+        type: array
+        items:
+          type: string
+          maxLength: 128
+          minLength: 1
+        maxItems: 800
+  PaginationExt:  # output
+    type: object
+    properties:
+      count:
+        description: The number of elements given "q" (query/query_hash)
+        type: integer
+      cursors:
+        description: A list of cursor, current and known following cursors
+        type: array
+        items:
+          type: string
+      cursor_hash:
+        description: MD5 hash of the cursor, query and sorting generating this query.
+        type: string
+      sort:
+        type: string
+  TargetInfo:
+    type: object
+    properties:
+      target_id:
+        description: Target unique identifier
+        type: string
+        format: uuid
+      scan_authorization:
+        type: object
+        properties:
+          url:
+            type: string
+            format: url
+          content:
+            type: string
+      continuous_mode:
+        description: Continuous Mode enabled
+        type: boolean
+      last_scan_date:
+        description: Last date the Target was scanned on
+        type: string
+        format: date
+      last_scan_id:
+        description: Last Scan unique identifier for the Target
+        type: string
+        format: uuid
+      last_scan_session_id:
+        type: string
+        format: uuid
+      last_scan_session_status:
+        type: string
+      severity_counts:
+        $ref: "#/definitions/SeverityCounts"
+      threat:
+        type: integer
+      links:
+        description: Target quick-access links (last scan, report)
+        type: array
+        items:
+          $ref: "#/definitions/Link"
+      manual_intervention:
+        description: Target requires manual intervention
+        type: boolean
+      verification:
+        description: The verification status of the target (none, auto, admin or demo)
+        type: string
+  Target:
+    type: object
+    required:
+    - address
+    properties:
+      address:
+        description: Target URL or hostname
+        type: string
+        format: host|url
+        maxLength: 1024
+      description:
+        description: Target description
+        type: string
+        maxLength: 1024
+        default: ""
+      type:
+        description: The type of the target (default, network or demo)
+        default: default
+        type: string
+        enum:
+        - default
+        - demo
+        - network
+      criticality:
+        description: >
+          Target criticality (Critical [30], High [20], Normal [10], Low [0])
+        type: integer
+        enum:
+        - 30
+        - 20
+        - 10
+        - 0
+        default: 10
+      fqdn_status:
+        readOnly: true
+        type: string
+      fqdn_tm_hash:
+        readOnly: true
+        type: string
+      deleted_at:
+        readOnly: true
+        type: string
+        format: date-time|null
+      fqdn:
+        readOnly: true
+        type: string
+      fqdn_hash:
+        readOnly: true
+        type: string
+      default_scanning_profile_id:
+        readOnly: true
+        type: string
+      agents:
+        type: array
+        readOnly: true
+        items:
+          $ref: "#/definitions/TargetAgents"
+        maxItems: 500
+  TargetAgents:
+    type: object
+    required:
+    - agent_id
+    properties:
+      agent_id:
+        type: string
+        description: Agent ID
+        format: uuid
+      name:
+        type: string
+        format: string
+  AddTargetsDescriptor:
+    type: object
+    required:
+    - targets
+    properties:
+      targets:
+        type: array
+        items:
+          $ref: "#/definitions/Target"
+        maxItems: 500
+      groups:
+        type: array
+        items:
+          type: string
+          format: uuid
+        maxItems: 25
+        uniqueItems: true
+  TargetItemResponseList:
+    type: object
+    properties:
+      targets:
+        type: array
+        items:
+          $ref: "#/definitions/Target"
+  TargetItemResponse:
+    type: object
+    allOf:
+    - $ref: "#/definitions/Target"
+    - $ref: "#/definitions/TargetInfo"
+  Schedule:
+    description: |+
+      Defines the schedule for the when an event (e.g. a Scan) is to occur
+      and at what frequency.
+
+      ##### Example
+
+      Schedule event to occur on a weekly basis (`FREQ=WEEKLY`), on every
+      third week (`INTERVAL=3`) on a Thursday (`BYDAY=TH`)
+
+      <code><pre>
+      "schedule":{
+                      "disable":false,
+                      "recurrence":"DTSTART:20180112T003000Z\nFREQ=WEEKLY;INTERVAL=3;BYDAY=TH",
+                      "time_sensitive":true
+      }
+      </pre></code>
+
+    type: object
+    properties:
+      disable:
+        description: Schedule is disabled
+        type: boolean
+      time_sensitive:
+        description: Scan Schedule is time-sensitive
+        type: boolean
+      history_limit:
+        description: Number of Scans to retain for a Schedule
+        type: integer
+        format: int32
+        maximum: 10
+        minimum: 0
+      start_date:
+        description: >
+          The (inclusive) start time of the schedule
+          For a recurring schedule, this is the start time of the first instance.
+          Formatted as described in RFC3339
+          http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
+        type: string
+        format: date-time|null
+      recurrence:
+        description: >
+          Recurrence specification as described in RFC5545
+          (http://tools.ietf.org/html/rfc5545)
+        type: string
+        format: rrule
+        maxLength: 256
+      triggerable:
+        # if start_date and recurrence are null, and triggerable is true,
+        # the scan will be scheduled only on trigger action POST /scans/{scan_id}/trigger
+        type: boolean
+        default: false
+  ScanInfo:
+    type: object
+    properties:
+      status:
+        description: Scan status (Scheduled, Processing, Aborted, Completed, Failed)
+        type: string
+        enum:
+        - scheduled
+        - queued
+        - starting
+        - processing
+        - aborting
+        - aborted
+        - pausing
+        - paused
+        - completed
+        - failed
+      event_level:
+        type: integer
+      severity_counts:
+        $ref: "#/definitions/SeverityCounts"
+      progress:
+        description: Percentage of Scan progress complete
+        type: integer
+        maximum: 100
+        minimum: 0
+      start_date:
+        description: Scan start date
+        type: string
+        format: date
+      threat:
+        type: integer
+      scan_session_id:
+        type: string
+        format: uuid
+      acusensor:
+        type: boolean
+  GenericScan:
+    type: object
+    required:
+    - profile_id
+    - schedule
+    properties:
+      profile_id:
+        description: Profile ID
+        type: string
+        format: uuid
+      report_template_id:
+        description: >
+        type: string
+        format: uuid
+      schedule:
+        $ref: "#/definitions/Schedule"
+      max_scan_time:  # in minutes, 0 unlimited or system default
+        type: integer
+        default: 0
+      incremental:
+        type: boolean
+        default: false
+      next_run:
+        readOnly: true
+        description: Next scheduled Scan date
+        type: string
+        format: date
+  Scan:
+    type: object
+    required:
+    - target_id
+    - profile_id
+    - schedule
+    properties:
+      target_id:
+        description: Scan target's ID
+        type: string
+        format: uuid
+      profile_id:
+        description: >2
+
+          Scanning profile (e.g. "Crawl Only", "Full Scan") ID.
+
+
+          **Note:** Custom scanning profiles may have randomized IDs
+
+
+          ----
+
+          List of **built-in** scanning profiles:
+
+          - Full Scan: 11111111-1111-1111-1111-111111111111
+
+          - Critical / High Risk Vulnerabilities: 11111111-1111-1111-1111-111111111112
+
+          - Cross-site Scripting Vulnerabilities: 11111111-1111-1111-1111-111111111116
+
+          - SQL Injection Vulnerabilities: 11111111-1111-1111-1111-111111111113
+
+          - Weak Passwords: 11111111-1111-1111-1111-111111111115
+
+          - Crawl Only: 11111111-1111-1111-1111-111111111117
+        type: string
+        format: uuid
+      report_template_id:
+        description: >
+          Report Template (e.g. "Developer Report", "OWASP Top 10 2017") ID
+
+
+          ----
+
+
+          List of **built-in** report templates and their IDs:
+
+          - Developer: 11111111-1111-1111-1111-111111111111
+
+          - Quick: 11111111-1111-1111-1111-111111111112
+
+          - Executive Summary: 11111111-1111-1111-1111-111111111113
+
+          - HIPAA: 11111111-1111-1111-1111-111111111114
+
+          - Affected Items: 11111111-1111-1111-1111-111111111115
+
+          - Scan Comparison: 11111111-1111-1111-1111-111111111124
+
+          - CWE 2011: 11111111-1111-1111-1111-111111111116
+
+          - ISO 27001: 11111111-1111-1111-1111-111111111117
+
+          - NIST SP800 53: 11111111-1111-1111-1111-111111111118
+
+          - OWASP Top 10 2013: 11111111-1111-1111-1111-111111111119
+
+          - OWASP Top 10 2017: 11111111-1111-1111-1111-111111111125
+
+          - PCI DSS 3.2: 11111111-1111-1111-1111-111111111120
+
+          - Sarbanes Oxley: 11111111-1111-1111-1111-111111111121
+
+          - STIG DISA: 11111111-1111-1111-1111-111111111122
+
+          - WASC Threat Classification: 11111111-1111-1111-1111-111111111123
+        type: string
+        format: uuid
+      schedule:
+        $ref: "#/definitions/Schedule"
+      max_scan_time:  # in minutes, 0 unlimited or system default
+        type: integer
+        default: 0
+      incremental:
+        type: boolean
+        default: false
+      next_run:
+        readOnly: true
+        description: Next scheduled Scan date
+        type: string
+        format: date
+  ScanSessionStatus:
+    type: object
+    properties:
+
+      current_session:
+        description: >
+          Information about the **current** scan that is
+          running. This will include information about the
+          progress and severity counts (e.g. `"low": 0`)
+        $ref: "#/definitions/ScanInfo"
+      previous_session: # not implemented
+        $ref: "#/definitions/ScanInfo"
+  ScanItemResponse:
+    type: object
+    allOf:
+    - $ref: "#/definitions/Scan"
+    - $ref: "#/definitions/ScanSessionStatus"
+    - type: object
+      properties:
+        target:
+          $ref: "#/definitions/Target"
+        criticality:
+          type: integer
+        profile_name:
+          description: Scanning Profile name
+          type: string
+        scan_id:
+          description: Scan unique identifier
+          type: string
+          format: uuid
+        start_date:
+          description: Scan start date
+          type: string
+          format: date-time
+        manual_intervention:
+          description: Scan has manual intervention
+          type: boolean
+  ScanListResponse:
+    description: Paginated list of Scans
+    type: object
+    properties:
+      scans:
+        type: array
+        items:
+          $ref: "#/definitions/ScanItemResponse"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  ContinuousScanItemResponse:
+    type: object
+    properties:
+      start_date:
+        type: string
+        format: date
+      end_date:
+        type: string
+        format: date
+      scan_type:
+        type: string
+      status:
+        type: string
+  ContinuousScanListResponse:
+    description: Paginated list of Continuous Scans
+    type: object
+    properties:
+      scans:
+        type: array
+        items:
+          $ref: "#/definitions/ContinuousScanItemResponse"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  OperationStats:
+    type: object
+    properties:
+      operation_name:
+        type: string
+        maxLength: 1024
+      number_of_runs:
+        type: integer
+      total_duration:
+        type: integer
+      average_duration:
+        type: integer
+  LocationStats:
+    type: object
+    properties:
+      location_name:
+        type: string
+        maxLength: 1024
+      number_of_requests:
+        type: integer
+      total_duration:
+        type: integer
+      average_duration:
+        type: integer
+  HostStatistics:
+    type: object
+    properties:
+      host:
+        type: string
+        format: url
+      aborted:
+        type: string
+        format: generic|null
+      aborted_reason:
+        type: string
+        format: generic|null
+      external_hosts:
+        type: array
+        items:
+          type: string
+          format: url
+      is_starting_host:
+        type: boolean
+      sensor_detected:
+        type: boolean
+      target_info:
+        type: object
+        properties:
+          os:
+            type: string
+          responsive:
+            type: boolean
+          server:
+            type: string
+          technologies:
+            type: array
+            items:
+              type: string
+          web_scan_status:
+            type: object
+            properties:
+              avg_response_time:
+                type: integer
+              locations:
+                type: integer
+              max_response_time:
+                type: integer
+              request_count:
+                type: integer
+  ScanningAppStatistics:
+    type: object
+    properties:
+      abort_requested:
+        type: boolean
+      start_date:
+        type: string
+      end_date:
+        type: string
+      end_deadline:
+        type: string
+      event_level:
+        type: integer
+      main:  # statistics for the main target
+        type: object
+        properties:
+          start_date:
+            type: string
+          duration:
+            type: integer
+          status:
+            type: string
+          progress:
+            type: integer
+          messages:
+            type: array
+            items:
+              type: object
+              properties:
+                kind:
+                  type: string
+                data:
+                  type: string
+                time:
+                  type: string
+                level:
+                  type: string
+                target_info:
+                  type: object
+                  properties:
+                    host:
+                      type: string
+                    target_id:
+                      type: string
+          status_statistics:  # only for web scan
+            type: object
+            properties:
+              operationStatsByRun:
+                type: array
+                maxItems: 20
+                items:
+                  $ref: "#/definitions/OperationStats"
+              operationStatsByTotalDuration:
+                type: array
+                maxItems: 20
+                items:
+                  $ref: "#/definitions/OperationStats"
+              locationStatsByRequest:
+                type: array
+                maxItems: 20
+                items:
+                  $ref: "#/definitions/LocationStats"
+              locationStatsByAvgDuration:
+                type: array
+                maxItems: 20
+                items:
+                  $ref: "#/definitions/LocationStats"
+              locationStatsByTotalDuration:
+                type: array
+                maxItems: 20
+                items:
+                  $ref: "#/definitions/LocationStats"
+          vulns:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                time:
+                  type: string
+                vuln_id:
+                  type: string
+                severity:
+                  type: integer
+                target_info:
+                  type: object
+                  properties:
+                    host:
+                      type: string
+                    target_id:
+                      type: string
+          web_scan_status:  # only for we scans
+            type: object
+            properties:
+              avg_response_time:
+                type: integer
+              locations:
+                type: integer
+              max_response_time:
+                type: integer
+              request_count:
+                type: integer
+      hosts:  # only for web scan
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/HostStatistics"
+      build:
+        type: string
+  ScanStatistics:
+    type: object
+    properties:
+      status:
+        type: string
+        enum:
+        - scheduled
+        - queued
+        - starting
+        - processing
+        - completed
+        - aborting
+        - aborted
+        - failed
+        - pausing
+        - paused
+        - resuming
+      severity_counts:
+        $ref: "#/definitions/SeverityCounts"
+      scanning_app:
+        type: object
+        properties:
+          wvs:
+            $ref: "#/definitions/ScanningAppStatistics"
+          ovas:
+            $ref: "#/definitions/ScanningAppStatistics"
+  VulnerabilityTypeDetails:
+    type: object
+    properties:
+      description:
+        description: Vulnerability Type description
+        type: string
+      cvss2:
+        description: Vulnerability Type CVSS v2.0 vector string
+        type: string
+      cvss3:
+        description: Vulnerability Type CVSS v3.0 vector string
+        type: string
+      cvss4:
+        description: Vulnerability Type CVSS v4.0 vector string
+        type: string
+      cvss_score:
+        description: Score is based on the highest CVSS version known for the vulnerability from 2.0 to 3.1
+        type: number
+      cvss4_score:
+        description: CVSS 4.0 score
+        type: number
+      impact:
+        description: Vulnerability Type security impact
+        type: string
+      recommendation:
+        description: Vulnerability Type remediation recommendation
+        type: string
+      long_description:
+        description: Vulnerability Type long description
+        type: string
+      references:
+        description: Vulnerability Type references and resources
+        type: array
+        items:
+          $ref: "#/definitions/Link"
+  VulnerabilityType:
+    type: object
+    properties:
+      vt_id:
+        description: Vulnerability Type unique identifier
+        type: string
+        format: uuid
+      name:
+        description: Vulnerability Type name
+        type: string
+      severity:
+        description: Vulnerability Type severity
+        type: integer
+      tags:
+        description: Vulnerability Type tags
+        type: array
+        items:
+          type: string
+          format: tag
+      cvss2:
+        description: Vulnerability Type CVSS v2.0 vector string
+        type: string
+        format: cvss
+      cvss3:
+        description: Vulnerability Type CVSS v3.0 vector string
+        type: string
+        format: cvss
+      cvss4:
+        description: Vulnerability Type CVSS v4.0 vector string
+        type: string
+        format: cvss
+      app:
+        description: Scanner identifier
+        type: string
+  VulnerabilityGroupsResponse:
+    description: Vulnerabilities Grouped
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/VulnerabilityGroupItem"
+  VulnerabilityGroupItem:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      data:
+        type: object
+      count:
+        type: integer
+      last_seen:
+        type: string
+  VulnerabilityTypeTargetsCountResponse:
+    description: List of Vulnerability Types found with counts
+    type: object
+    properties:
+      vulnerability_types:
+        type: array
+        items:
+          $ref: "#/definitions/VulnerabilityTypeTargetsCountResponseItem"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  VulnerabilityTypeTargetsCountResponseItem:
+    type: object
+    allOf:
+    - $ref: "#/definitions/VulnerabilityType"
+    - type: object
+      properties:
+        count:
+          type: integer
+        criticality:
+          description: Vulnerability Type criticality score
+          type: integer
+  VulnerabilityTypeSessionsCountResponse:
+    type: object
+    properties:
+      vulnerability_types:
+        description: Count of Vulnerability Types found
+        type: array
+        items:
+          $ref: "#/definitions/VulnerabilityTypeSessionsCountResponseItem"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  VulnerabilityTypeSessionsCountResponseItem:
+    type: object
+    allOf:
+    - $ref: "#/definitions/VulnerabilityType"
+    - type: object
+      properties:
+        count:
+          type: integer
+  Vulnerability:
+    type: object
+    allOf:
+    - $ref: "#/definitions/VulnerabilityStatus"
+    - type: object
+      properties:
+        target_description:
+          description: The affected target description
+          type: string
+        vuln_id:
+          description: Vulnerability unique identifier
+          type: string
+        target_vuln_id:
+          description: Target vulnerability unique identifier (for scan session vuln view only)
+          type: string
+        issue_id:
+          type: string
+        issue_tracker_id:
+          type: string
+        issue_url:
+          description: Link to the vulnerability created in the configured issue tracker
+          type: string
+        vt_name:
+          description: Vulnerability Type name
+          type: string
+        criticality:
+          description: Vulnerability criticality
+          type: integer
+        vt_id:
+          description: Vulnerability Type unique identifier
+          type: string
+          format: uuid
+        affects_detail:
+          description: Vulnerability input
+          type: string
+        affects_url:
+          description: Vulnerability URL
+          type: string
+        source:
+          description: Who detected the vulnerability
+          type: string
+        loc_id:
+          type: integer
+        target_id:
+          description: Target unique identifier
+          type: string
+          format: uuid
+        first_seen:
+          description: Date Vulnerability was first found
+          type: string
+          format: date
+        last_seen:
+          description: Date Vulnerability was last found
+          type: string
+          format: date
+        severity:
+          description: Vulnerability Type severity
+          type: integer
+        tags:
+          description: Vulnerability Type tags
+          type: array
+          items:
+            type: string
+            format: tag
+        continuous:
+          description: Continuous Scan
+          type: boolean
+        confidence:
+          type: integer
+        vt_created:
+          description: ""
+          type: string
+          format: date-time|null
+        vt_updated:
+          description: ""
+          type: string
+          format: date-time|null
+        app:
+          type: string
+        archived:
+          type: boolean
+  VulnerabilityStatus:
+    type: object
+    required:
+    - status
+    properties:
+      status:
+        description: Vulnerability Status (Fixed, Ignored, Open, False Positive)
+        type: string
+        enum:
+        - fixed
+        - ignored
+        - open
+        - false_positive
+      comment:
+        type: string
+        maxLength: 256
+  VulnerabilityDetails:
+    allOf:
+    - $ref: "#/definitions/Vulnerability"
+    - $ref: "#/definitions/VulnerabilityTypeDetails"
+    - type: object
+      properties:
+        details:
+          description: >
+            Details dictionary used for obtaining a description on how the alert
+            was found
+          type: string
+        request:
+          type: string
+          format: binary
+        response_info:
+          type: string
+        highlights:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+              length:
+                type: integer
+              in:
+                type: string
+                maxLength: 16
+  VulnerabilityListResponse:
+    type: object
+    properties:
+      vulnerabilities:
+        description: Vulnerabilities list
+        type: array
+        items:
+          $ref: "#/definitions/Vulnerability"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+    required:
+    - vulnerabilities
+  Link:
+    type: object
+    properties:
+      rel:
+        description: Name or type of relation
+        type: string
+        maxLength: 256
+      href:
+        description: Location of related item
+        type: string
+        format: url
+        maxLength: 256
+    required:
+    - rel
+    - href
+  SeverityCounts:
+    type: object
+    properties:
+      critical:
+        description: Critical-severity Vulnerability count
+        type: integer
+      high:
+        description: High-severity Vulnerability count
+        type: integer
+      medium:
+        description: Medium-severity Vulnerability count
+        type: integer
+      low:
+        description: Low-severity Vulnerability count
+        type: integer
+      info:
+        description: Informational Alert count
+        type: integer
+  TechnologyVersion:
+    type: object
+    properties:
+      start:
+        type: string
+        maxLength: 256
+      end:
+        type: string
+        maxLength: 256
+      cvss_score:
+        type: number
+  UpgradeVersion:
+    type: object
+    properties:
+      version:
+        type: string
+        maxLength: 256
+      cvss_score:
+        type: number
+  Technology:
+    type: object
+    properties:
+      tech_id:
+        type: string
+      name:
+        type: string
+        maxLength: 256
+      description:
+        type: string
+        maxLength: 65535
+      type:
+        type: string
+        maxLength: 256
+      link:
+        type: string
+        maxLength: 256
+      outdated:
+        type: boolean
+      loc_id:
+        type: integer
+      loc_url:
+        type: string
+      detected_version:
+        $ref: "#/definitions/TechnologyVersion"
+      branch_upgrade:
+        $ref: "#/definitions/UpgradeVersion"
+      upgrade:
+        $ref: "#/definitions/UpgradeVersion"
+  TechnologiesListResponse:
+    type: object
+    properties:
+      technologies:
+        description: List of technologies
+        type: array
+        items:
+          $ref: "#/definitions/Technology"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  UserCredentials:
+    type: object
+    properties:
+      enabled:
+        description: User account is enabled
+        type: boolean
+        default: false
+      username:
+        description: User account username
+        type: string
+        maxLength: 128
+      password:
+        description: User account password hash
+        type: string
+        maxLength: 128
+      url:
+        description: URL
+        type: string
+        maxLength: 256
+        format: url
+  SiteLogin:
+    type: object
+    required:
+    - kind
+    properties:
+      kind:
+        description: Form Authentication method (None, Automatic, Sequence)
+        type: string
+        enum:
+        - none
+        - automatic
+        - sequence
+        - oauth
+      credentials:
+        $ref: "#/definitions/UserCredentials"
+  CustomCookies:
+    type: object
+    properties:
+      cookie:
+        description: Custom Cookies value
+        type: string
+        maxLength: 4096
+      url:
+        description: Custom Cookies URL
+        type: string
+        format: url
+        maxLength: 256
+  TargetGroupsListResponse:
+    type: object
+    properties:
+      groups:
+        type: array
+        items:
+          $ref: "#/definitions/TargetGroup"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  TargetGroup:
+    type: object
+    required:
+    - name
+    properties:
+      group_id:
+        description: Target Group unique identifier
+        type: string
+        format: uuid
+      name:
+        description: Target Group name
+        type: string
+        maxLength: 256
+      target_count:
+        description: Target Group Target count
+        type: integer
+      description:
+        type: string
+        maxLength: 512
+      vuln_count:
+        $ref: "#/definitions/SeverityCounts"
+  IssueTrackerAuth:
+    type: object
+    required:
+    - kind
+    properties:
+      kind:
+        description: Issue Tracker authentication method
+        type: string
+        enum:
+        - cookie
+        - http_basic
+        - ntlm
+        - http_basic_token
+        - oauth
+        - impersonation_http_basic_token
+      user:
+        description: Issue Tracker Username
+        type: string
+        maxLength: 128
+      password:
+        description: Issue Tracker Password
+        type: string
+        maxLength: 256
+      consumer_key:
+        type: string
+        maxLength: 256
+      private_key:
+        type: string
+        maxLength: 5120
+  IssueTrackerCollections:
+    type: object
+    properties:
+      collections:
+        type: array
+        items:
+          $ref: "#/definitions/IssueTrackerCollection"
+  IssueTrackerCollection:
+    type: object
+    properties:
+      collection_name:
+        description: The name of the collection
+        type: string
+        maxLength: 128
+  IssueTrackerCustomFields:
+    type: object
+    properties:
+      custom_fields:
+        type: array
+        maxItems: 50
+        items:
+          $ref: "#/definitions/IssueTrackerCustomField"
+  IssueTrackerCustomField:
+    type: object
+    properties:
+      custom_field_name:
+        description: The name of the custom field
+        type: string
+        maxLength: 256
+      custom_field_id:
+        description: The id of the custom field
+        type: string
+        maxLength: 256
+  IssueTrackerProject:
+    type: object
+    properties:
+      project_id:
+        description: The id of the project
+        type: string
+        maxLength: 128
+      project_name:
+        description: The name of the project
+        type: string
+        maxLength: 128
+      project_key:
+        description: The key of the project
+        type: string
+        maxLength: 128
+  IssueTrackerIssueType:
+    type: object
+    properties:
+      issue_id:
+        description: The id of the issue type
+        type: string
+        maxLength: 128
+      issue_name:
+        description: The name of the issue type
+        type: string
+        maxLength: 128
+  IssueTrackerConfig:
+    type: object
+    required:
+    - platform
+    - url
+    - auth
+    properties:
+      platform:
+        description: Issue Tracker Type
+        type: string
+        enum:
+        - github
+        - jira
+        - tfs
+        - gitlab
+        - bugzilla
+        - mantis
+        - azureservice
+      url:
+        description: Issue Tracker URL
+        type: string
+        format: url
+        maxLength: 128
+      collection:
+        $ref: "#/definitions/IssueTrackerCollection"
+      project:
+        $ref: "#/definitions/IssueTrackerProject"
+      issue_type:
+        $ref: "#/definitions/IssueTrackerIssueType"
+      auth:
+        $ref: "#/definitions/IssueTrackerAuth"
+      proxy:   # issue tracker can go out direct, thru system proxy (default option), or own proxy (custom)
+        type: object
+        properties:
+          proxy_type:
+            type: string
+            enum:  # None === system
+            - system
+            - no_proxy
+            - custom
+            -
+          settings: # required and used only when proxy_type == custom
+            $ref: "#/definitions/ProxySettings"
+      access_from_any_groups:
+        type: boolean
+      groups_access:
+        type: array
+        items:
+          type: string
+          format: uuid
+      tags:
+        type: array
+        maxItems: 20
+        items:
+          type: string
+      labels:
+        type: array
+        maxItems: 20
+        items:
+          type: string
+      custom_fields:
+        type: array
+        maxItems: 20
+        items:
+          type: object
+          required:
+          - value
+          properties:
+            id:
+              type: string
+            value:
+              type: string
+            name:
+              type: string
+  IssueTrackerConnectionStatus:
+    type: object
+    properties:
+      success:
+        description: Issue Tracker status
+        type: boolean
+      message:
+        description: Issue Tracker message
+        type: string
+  IssueTrackerProjects:
+    type: object
+    properties:
+      projects:
+        description: Issue Tracker projects
+        type: array
+        items:
+          description: Issue Tracker project
+          type: string
+  IssueTrackerIssueTypes:
+    type: object
+    properties:
+      issue_types:
+        type: array
+        items:
+          description: Issue Tracker issue type
+          type: string
+  IssueTrackerEntry:
+    type: object
+    required:
+    - name
+    allOf:
+    - $ref: "#/definitions/IssueTrackerConfig"
+    - type: object
+      properties:
+        issue_tracker_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 128
+  IssueTrackerList:
+    type: object
+    properties:
+      issue_trackers:
+        type: array
+        items:
+          $ref: "#/definitions/IssueTrackerEntry"
+  TargetConfiguration:
+    type: object
+    properties:
+      issue_tracker_id:
+        type: string
+        format: uuid|empty
+      plugin_instance_id:
+        type: string
+        format: uuid|empty
+      limit_crawler_scope:
+        description: Limit crawling to Target URI and sub-directories only
+        type: boolean
+      login:
+        $ref: "#/definitions/SiteLogin"
+      sensor:
+        description: AcuSensor configured
+        type: boolean
+      sensor_secret:
+        description: AcuSensor secret
+        type: string
+      ssh_credentials:
+        $ref: "#/definitions/SSHCredentials"
+      proxy:
+        $ref: "#/definitions/ProxySettings"
+      authentication:
+        $ref: "#/definitions/UserCredentials"
+      client_certificate_password:
+        description: Client Certificate password
+        type: string
+        maxLength: 128
+      client_certificate_url:
+        description: Client Certificate URL
+        type: string
+        maxLength: 256
+        format: url|null|empty
+      scan_speed:
+        description: HTTP request send rate (Fast, Moderate, Slow, Sequential)
+        type: string
+        enum:
+        - fast
+        - moderate
+        - slow
+        - sequential
+        - slower
+      case_sensitive:
+        description: Case-sensitive crawling
+        type: string
+        enum:
+        - 'yes'
+        - 'no'
+        - 'auto'
+      technologies:
+        description: Technologies enumerated
+        type: array
+        items:
+          type: string
+          enum:
+          - ASP
+          - ASP.NET
+          - PHP
+          - Perl
+          - Java/J2EE
+          - ColdFusion/Jrun
+          - Python
+          - Rails
+          - FrontPage
+          - Node.js
+      custom_headers:
+        description: Custom HTTP headers set
+        type: array
+        maxItems: 20
+        items:
+          type: string
+          format: header
+          maxItems: 20
+      custom_cookies:
+        description: Custom cookies set
+        type: array
+        maxItems: 10
+        uniqueItems: true
+        items:
+          $ref: "#/definitions/CustomCookies"
+      excluded_paths:
+        description: Paths excluded from the Scan scope
+        type: array
+        maxItems: 100
+        items:
+          type: string
+          maxLength: 512
+          format: path_match
+      user_agent:
+        description: User-agent string set
+        type: string
+        maxLength: 256
+      debug:
+        description: Debug mode
+        type: boolean
+      excluded_hours_id:
+        type: string
+        format: uuid|empty|null
+      ad_blocker:
+        type: boolean
+        default: true
+      restrict_scans_to_import_files:
+        type: boolean
+      default_scanning_profile_id:
+        type: string
+        format: uuid|null|empty
+      preseed_mode:
+        type: string
+      skip_login_form:
+        type: boolean
+        default: false
+    default:
+      description: Target configuration default values
+      limit_crawler_scope: true
+      login:
+        kind: none
+      sensor: false
+      ssh_credentials:
+        kind: none
+      proxy:
+        enabled: false
+      authentication:
+        enabled: false
+      client_certificate_password: ""
+      scan_speed: fast
+      case_sensitive: auto
+      technologies: []
+      custom_headers: []
+      custom_cookies: []
+      excluded_paths: []
+      user_agent: ""
+      debug: false
+  ReportSource:
+    type: object
+    required:
+    - list_type
+    properties:
+      description:
+        type: string
+        maxLength: 256
+      list_type:
+        type: string
+        enum:
+        - all_vulnerabilities
+        - targets
+        - groups
+        - scans
+        - scan_result
+        - vulnerabilities
+        - scan_vulnerabilities
+        - scan_pair
+        - scan_result_pair
+      id_list:
+        type: array
+        items:
+          type: string
+          maxLength: 36
+        maxItems: 500
+  ExportSource:
+    type: object
+    required:
+    - list_type
+    properties:
+      list_type:
+        type: string
+        enum:
+        - all_vulnerabilities
+        - targets
+        - groups
+        - scans
+        - scan_result
+        - vulnerabilities
+        - scan_vulnerabilities
+        - scan_pair
+        - scan_result_pair
+      id_list:
+        type: array
+        items:
+          type: string
+          maxLength: 36
+        maxItems: 500
+      waf_id:
+        type: string
+        format: uuid
+      waf_name:
+        type: string
+  ExportType:
+    type: object
+    properties:
+      name:
+        type: string
+      id:
+        type: string
+        format: uuid
+      content_type:
+        type: string
+      accepted_sources:
+        type: array
+        items:
+          type: string
+          enum:
+          - all_vulnerabilities
+          - targets
+          - groups
+          - scans
+          - scan_result
+          - vulnerabilities
+          - scan_vulnerabilities
+          - scan_pair
+          - scan_result_pair
+      export_id:
+        type: string
+        format: uuid
+      upload:
+        type: boolean
+    required:
+    - export_id
+  ExportTypesList:
+    type: object
+    properties:
+      templates:
+        type: array
+        items:
+          $ref: "#/definitions/ExportType"
+  ExcludedPathListUpdate:
+    type: object
+    properties:
+      add:
+        type: object
+        description: A list of exclusions to be added to the list
+        $ref: "#/definitions/ExcludedPathList"
+      delete:
+        type: object
+        description: A list of exclusions to be deleted from the list
+        $ref: "#/definitions/ExcludedPathList"
+  ExcludedPathList:
+    type: object
+    properties:
+      excluded_paths:
+        description: Paths excluded from the Scan scope
+        type: array
+        maxItems: 512
+        items:
+          type: string
+          maxLength: 512
+          format: path_match
+  NewExport:
+    type: object
+    required:
+    - export_id
+    - source
+    properties:
+      export_id:
+        type: string
+        format: uuid
+      source:
+        $ref: "#/definitions/ExportSource"
+  NewReport:
+    type: object
+    required:
+    - template_id
+    - source
+    properties:
+      template_id:
+        type: string
+        format: uuid
+      source:
+        $ref: "#/definitions/ReportSource"
+  CrawlLocation:
+    type: object
+    properties:
+      loc_id:
+        description: Crawl location unique identifier
+        type: integer
+      name:
+        description: Crawl location name
+        type: string
+      path:
+        description: Crawl location path
+        type: string
+      loc_type:
+        description: Crawl location type (File, Folder)
+        type: string
+        enum:
+        - file
+        - folder
+      source_id:
+        description: Crawl location source unique identifier
+        type: integer
+      parent_id:
+        type: integer
+      tags:
+        type: string
+        format: tag
+      fragments:
+        type: string
+      excluded:
+        type: boolean
+  CrawlLocationDetails:
+    type: object
+    properties:
+      loc_id:
+        description: Crawl location unique identifier
+        type: integer
+      parent_id:
+        type: integer
+      source_id:
+        type: integer
+      url:
+        description: Crawl location URL
+        type: string
+        format: url
+      severity_counts:
+        $ref: "#/definitions/SeverityCounts"
+      threat:
+        type: integer
+  ChildUser:
+    type: object
+    required:
+    - email
+    - first_name
+    - last_name
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      password:
+        type: string
+        format: sha256
+      email:
+        type: string
+        format: email
+        maxLength: 256
+      first_name:
+        type: string
+        maxLength: 64
+      last_name:
+        type: string
+        maxLength: 64
+      role_mappings:
+        type: array
+        items:
+          $ref: "#/definitions/RoleMapping"
+      user_groups:
+        type: array
+        items:
+          type: string
+          format: uuid
+      enabled:
+        type: boolean
+      totp_enabled:
+        readOnly: true
+        type: boolean
+      locked:
+        readOnly: true
+        type: integer
+      invite_id:
+        type: string
+        format: uuid
+      invite_expired:
+        type: boolean
+      expiration_date:
+        type: string
+        format: date-time
+      sso_exemption:
+        type: boolean
+  ChildUserIdList:
+    type: object
+    required:
+    - user_id_list
+    properties:
+      user_id_list:
+        type: array
+        items:
+          type: string
+          format: uuid
+  FileUploadDescriptor:
+    type: object
+    properties:
+      name:
+        description: File name
+        type: string
+        format: filename
+        maxLength: 128
+      size:
+        description: File size in bytes
+        type: integer
+        format: int32
+  UploadedFile:
+    type: object
+    properties:
+      upload_id:
+        description: Uploaded file unique identifier
+        type: string
+        format: uuid
+      name:
+        description: Uploaded file name
+        type: string
+        format: filename
+      size:
+        description: Uploaded file size
+        type: integer
+        format: int32
+      status:
+        description: Uploaded file status
+        type: boolean
+      current_size:
+        description: Uploaded file current size
+        type: integer
+      retrieve_url:
+        type: string
+        format: url|null
+  ErrorDescriptionResponse:
+    description: Error processing request
+    type: object
+    properties:
+      code:
+        type: integer
+      reason:
+        description: Localized error message
+        type: string
+      details:
+        type: array
+        items:
+          type: string
+    required:
+    - reason
+    - code
+  UploadLocationResponse:
+    description: Temporary file upload URL
+    type: object
+    properties:
+      upload_url:
+        type: string
+        format: url
+  UploadedFilesResponse:
+    description: Uploaded file properties
+    type: object
+    properties:
+      files:
+        type: array
+        items:
+          $ref: "#/definitions/UploadedFile"
+  ReportIdList:
+    type: object
+    required:
+    - report_id_list
+    properties:
+      report_id_list:
+        type: array
+        items:
+          type: string
+          format: uuid
+  TargetIdContainer:
+    type: object
+    properties:
+      target_id:
+        type: string
+        format: uuid
+  GroupChangeTargetIdList:
+    type: object
+    properties:
+      remove:
+        description: Remove Targets from Target Group
+        type: array
+        items:
+          type: string
+          format: uuid
+      add:
+        description: Add Targets to Target Group
+        type: array
+        items:
+          type: string
+          format: uuid
+  TargetIdList:
+    type: object
+    properties:
+      target_id_list:
+        description: Target unique identifiers
+        type: array
+        items:
+          type: string
+          format: uuid
+  TargetGroupIdList:
+    type: object
+    properties:
+      group_id_list:
+        description: Group unique identifiers
+        type: array
+        items:
+          type: string
+          format: uuid
+  UserAccess:
+    type: object
+    required:
+    - access_all_groups
+    - group_id_list
+    properties:
+      access_all_groups:
+        description: User has access to all Groups
+        type: boolean
+      group_id_list:
+        description: Groups accessible by a User
+        type: array
+        items:
+          maxItems: 50
+          type: string
+          format: uuid
+  TargetListResponse:
+    description: Targets list
+    type: object
+    required:
+    - targets
+    properties:
+      targets:
+        type: array
+        items:
+          $ref: "#/definitions/TargetItemResponse"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  Report:
+    type: object
+    properties:
+      report_id:
+        description: Report unique identifier
+        type: string
+        format: uuid
+      source:
+        $ref: "#/definitions/ReportSource"
+      template_id:
+        description: Report template unique identifier
+        type: string
+        format: uuid
+      template_name:
+        description: Report template name
+        type: string
+      template_type:
+        description: Report template type
+        type: integer
+      generation_date:
+        description: Report generation date
+        type: string
+        format: date-time
+      status:
+        description: Report status
+        type: string
+      download:
+        description: Report download URI
+        type: array
+        items:
+          type: string
+  Export:
+    type: object
+    properties:
+      report_id:
+        type: string
+        format: uuid
+      source:
+        $ref: "#/definitions/ExportSource"
+      template_id:
+        type: string
+        format: uuid
+      template_name:
+        type: string
+      template_type:
+        type: integer
+      generation_date:
+        type: string
+        format: date-time
+      status:
+        type: string
+      download:
+        type: array
+        items:
+          type: string
+  ReportTemplateList:
+    type: object
+    properties:
+      templates:
+        type: array
+        items:
+          $ref: "#/definitions/ReportTemplate"
+  ReportListResponse:
+    description: List of Reports
+    type: object
+    required:
+    - reports
+    - pagination
+    properties:
+      reports:
+        type: array
+        items:
+          $ref: "#/definitions/Report"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  ScanningProfilesResponse:
+    description: List of available Scanning Profiles
+    type: object
+    properties:
+      scanning_profiles:
+        type: array
+        items:
+          $ref: "#/definitions/ScanningProfile"
+  CrawlLocationListResponse:
+    description: List of queried crawl locations
+    type: object
+    properties:
+      locations:
+        type: array
+        items:
+          $ref: "#/definitions/CrawlLocation"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+    required:
+    - locations
+  ChildUserListResponse:
+    description: Paginated list of users
+    type: object
+    properties:
+      users:
+        type: array
+        items:
+          $ref: "#/definitions/ChildUser"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+    required:
+    - users
+  SSHCredentials:
+    type: object
+    properties:
+      kind:
+        description: SSH authentication method
+        type: string
+        enum: ['none', 'key', 'password']
+      username:
+        description: SSH host username
+        type: string
+        maxLength: 128
+      port:
+        description: SSH host port
+        type: integer
+        format: int32
+        default: 22
+      password:
+        description: SSH host password
+        type: string
+        maxLength: 128
+      ssh_key:
+        description: SSH key
+        type: string
+      key_password:
+        description: SSH key passphrase
+        type: string
+        maxLength: 128
+  ScanResultListResponse:
+    type: object
+    properties:
+      results:
+        type: array
+        items:
+          $ref: "#/definitions/ScanResultItem"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  ScanResultItem:
+    description: Scan result properties
+    type: object
+    properties:
+      scan_id:
+        description: Scan unique identifier
+        type: string
+        format: uuid
+      result_id:
+        description: Result unique identifier
+        type: string
+        format: uuid
+      start_date:
+        description: Scan start-date
+        type: string
+        format: date-time
+      end_date:
+        description: Scan end-date
+        type: string
+        format: date-time
+      status:
+        description: Scan status
+        type: string
+  AllowedHost:
+    type: object
+    required:
+    - address
+    properties:
+      target_id:
+        description: Target unique identifier
+        type: string
+        format: uuid
+      address:
+        description: Target URL or hostname
+        type: string
+        format: host|url
+        maxLength: 1024
+      description:
+        description: Target description
+        type: string
+        maxLength: 1024
+        default: ""
+  AllowedHosts:
+    description: List of Allowed Hosts
+    type: object
+    properties:
+      hosts:
+        type: array
+        items:
+          $ref: "#/definitions/AllowedHost"
+  ProxySettings:
+    description: System proxy settings
+    type: object
+    properties:
+      protocol:
+        description: Proxy protocol
+        type: string
+        maxLength: 64
+        enum:
+        - http
+      address:
+        description: Proxy address
+        type: string
+        format: host
+        maxLength: 256
+      port:
+        description: Proxy port
+        type: integer
+      username:
+        description: Proxy username
+        type: string
+        maxLength: 64
+      password:
+        description: Proxy password
+        type: string
+        maxLength: 64
+      enabled:
+        description: Proxy enabled
+        type: boolean
+        default: false
+  ContinuousScanMode:
+    type: object
+    required:
+    - enabled
+    properties:
+      enabled:
+        type: boolean
+  SensorSecretContainer:
+    description: AcuSensor secret reset (random secret generated if none set)
+    type: object
+    properties:
+      secret:
+        type: string
+        format: md5
+  SSOSettings:
+    type: object
+    required:
+    - enabled
+    properties:
+      enabled:
+        type: boolean
+        default: false
+      sso_type:
+        type: string
+        enum:
+        - saml
+        - oidc
+      sso_provider:
+        type: string
+        enum:
+        - Okta
+        - Google
+        - AzureAD
+        - ADFS
+      auto_provision_enabled:
+        type: boolean
+        default: false
+      is_encrypt_assertion:
+        type: boolean
+        default: false
+      x509_certificate:
+        type: string
+      is_alternate_login_email:
+        type: boolean
+        default: false
+      is_enforced:
+        type: boolean
+        default: false
+      saml2_endpoint:
+        type: string
+        format: host
+        maxLength: 512
+      idp_identifier:
+        type: string
+        format: host
+        maxLength: 512
+      saml2_service_url:
+        type: string
+        format: host
+        maxLength: 512
+      identifier:
+        type: string
+        format: host
+        maxLength: 512
+      private_key:
+        type: string
+      private_key_password:
+        type: string
+      private_key_file_name:
+        type: string
+      private_key_detail:
+        type: string
+      assertion_certificate:
+        type: string
+      assertion_certificate_detail:
+        type: string
+      assertion_signed:
+        type: boolean
+        default: false
+      auth_signed:
+        type: boolean
+        default: false
+  ManualInterventionItem:
+    type: object
+    properties:
+      target_id:
+        type: string
+      scan_id:
+        type: string
+      scan_session_id:
+        type: string
+      scanning_app:
+        type: string
+      data:
+        type: string
+      index:
+        type: integer
+      old:
+        type: number
+      target_desc:
+        description: Target info (address, description)
+        type: array
+        items:
+          type: string
+  ExcludedHoursProfile:
+    type: object
+    required:
+    - name
+    - exclusion_matrix
+    properties:
+      name:
+        type: string
+        maxLength: 256
+        minLength: 1
+      excluded_hours_id:
+        type: string
+        format: uuid
+      time_offset:
+        description: Time offset in minutes
+        type: integer
+        maximum: 840
+        minimum: -720
+        default: 0
+      exclusion_matrix:
+        description: Exclusion matrix 7d * 24h, true = exclude, false = ignore
+        type: array
+        minItems: 168
+        maxItems: 168
+        items:
+          type: boolean
+  ExcludedHoursProfilesList:
+    type: object
+    properties:
+      values:
+        type: array
+        items:
+          $ref: "#/definitions/ExcludedHoursProfile"
+  VulnerabilityRecheck:
+    type: object
+    properties:
+      ui_session_id:
+        description: For internal use only
+        type: string
+        format: md5
+  VulnerabilitiesRecheck:
+    type: object
+    properties:
+      vuln_id_list:
+        type: array
+        items:
+          type: string
+          maxLength: 64
+      ui_session_id:
+        description: For internal use only
+        type: string
+        format: md5
+  TargetConfigStatus_sensor:
+    type: object
+    properties:
+      version:
+        type: string
+      found:
+        type: boolean
+  TargetConfigStatus_authentication_missing:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_certificate_missing:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_login_missing:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_authentication_error:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_login_sequence:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_auto_login:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_scope_changed:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_importer_failed:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_non_responsive:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_sensor_detected:
+    type: object
+    properties:
+      url:
+        type: string
+  TargetConfigStatus_importer_out_of_scope:
+    type: object
+    properties:
+      url:
+        type: string
+  TaskIdObject:
+    type: object
+    properties:
+      task_id:
+        type: string
+  WorkerList:
+    type: object
+    properties:
+      workers:
+        type: array
+        items:
+          $ref: "#/definitions/Worker"
+  WorkerIdList:
+    type: object
+    properties:
+      worker_id_list:
+        type: array
+        items:
+          type: string
+          format: uuid
+  WorkerExtended:
+    allOf:
+    - $ref: "#/definitions/Worker"
+    - type: object
+      properties:
+        max_scans:
+          type: integer
+        current_scans:
+          type: integer
+        status_extra:
+          type: object
+  WorkerDescription:
+    type: object
+    properties:
+      description:
+        type: string
+        maxLength: 256
+        minLength: 1
+  Worker:
+    type: object
+    required:
+    - scanning_app
+    - endpoint
+    properties:
+      scanning_app:
+        type: string
+        enum:
+        - wvs
+        - ovas
+      endpoint:
+        type: string
+        format: url
+      description:
+        type: string
+      worker_id:
+        type: string
+        format: uuid
+      status:
+        type: string
+        enum:
+        - offline
+        - online
+      authorization:
+        type: string
+        enum:
+        - pending
+        - authorized
+        - rejected
+        - detached
+      app_version:
+        type: string
+      license_status:
+        type: string
+      targets:
+        readOnly: true
+        type: array
+        items:
+          type: string
+          format: uuid
+      notification_status:
+        type: boolean
+  TargetDeletionNotification:
+    type: object
+    properties:
+      target_deletion_allowance:
+        type: integer
+      target_deletion_consumed:
+        type: boolean
+  FQDNEntry:
+    type: object
+    properties:
+      fqdn:           # fqdn in clear text or could be "hashed" (ex. abc*********) if not "locla" ie not on the current installation for given LK
+        type: string
+      fqdn_hash:      # the hash of the FQDN (the hash used at/by TargetManagementService [TM])
+        type: string
+      tm_type:        # the target type from TM poin of view. "Licensed" means standard target, "Network" network only
+        type: string
+      last_scanned:   # appears if FQDN was scanned locally
+        type: string
+      deleted:        # appears if FQDN was deleted and still held locally (this should resolve once TM was updated)
+        type: string
+      local_target_count:  # how many targets has locally
+        type: integer
+      local:          # if the FQDN is added locally too
+        type: boolean
+      status:         # the current status. "new" was not yet negotiated with TM, "unlocked" not scanned yet, "locked" scanned, "rejected" TM does not accept the FQDN, "deleted" deleted but cannot be released yet due license restriciton
+        type: string
+      added:          # when was added to TM
+        type: string
+      updated:        # last update against TM
+        type: string
+  FQDNList:
+    type: object
+    properties:
+      fqdns:
+        type: array
+        items:
+          $ref: "#/definitions/FQDNEntry"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+  EmptyObject:
+    type: object
+  RenderableMessage:
+    type: object
+    properties:
+      template:
+        type: string
+      data:
+        type: string
+      template_id:
+        type: string
+        format: md5|empty|null
+  WAFsList:
+    type: object
+    properties:
+      wafs:
+        type: array
+        items:
+          $ref: "#/definitions/WAFEntry"
+  WAFConnectionStatus:
+    type: object
+    properties:
+      success:
+        description: WAF status
+        type: boolean
+      message:
+        description: WAF message
+        type: string
+  WAFEntry:
+    type: object
+    required:
+    - name
+    allOf:
+    - $ref: "#/definitions/WAFConfig"
+    - type: object
+      properties:
+        waf_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 128
+  WAFConfig:
+    type: object
+    required:
+    - Platform
+    - acl_name
+    - access_key_id
+    - secret_key
+    - acl_id
+    - scope
+    properties:
+      platform:
+        description: WAF platform type
+        type: string
+        enum:
+        - AWS
+      acl_name:
+        description: Web ACL name obtained from aws web portal
+        type: string
+        maxLength: 128
+      access_key_id:
+        description: AWS Access Key Id
+        type: string
+        maxLength: 128
+      secret_key:
+        description: AWS secret access key
+        type: string
+        maxLength: 128
+      scope:
+        description: Scope of the web ACL
+        type: string
+        enum:
+        - CLOUDFRONT
+        - REGIONAL
+      region:
+        description: Region of the web ACL (If cloudfront default to us-east-1)
+        type: string
+        enum:
+        - us-east-1
+        - us-east-2
+        - us-west-1
+        - us-west-2
+        - ca-central-1
+        - eu-north-1
+        - eu-west-3
+        - eu-west-2
+        - eu-west-1
+        - eu-central-1
+        - ap-south-1
+        - ap-southeast-1
+        - ap-northeast-2
+        - ap-southeast-2
+        - ap-northeast-1
+        - sa-east-1
+      acl_id:
+        description: Web ACL id obtained from aws web portal
+        type: string
+        maxLength: 128
+      proxy:   # waf client can go out direct, thru system proxy (default option), or own proxy (custom)
+        type: object
+        properties:
+          proxy_type:
+            type: string
+            enum:  # None === system
+            - system
+            - no_proxy
+            - custom
+            -
+          settings: # required and used only when proxy_type == custom
+            $ref: "#/definitions/ProxySettings"
+  RolesList:
+    description: Paginated list of roles
+    type: object
+    properties:
+      roles:
+        type: array
+        items:
+          $ref: "#/definitions/RoleDetails"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+    required:
+    - roles
+  PermissionDetailEntry:
+    type: object
+    properties:
+      category:
+        type: string
+        maxLength: 128
+      name:
+        type: string
+        maxLength: 128
+      description:
+        type: string
+        maxLength: 256
+  RoleStats:
+    type: object
+    properties:
+      user_count:
+        type: integer
+      group_count:
+        type: integer
+      all_user_count:  # only available on role details and not in listings
+        type: integer
+  RoleDetails:
+    type: object
+    properties:
+      role_id:
+        type: string
+        format: uuid
+      name:
+        type: string
+        maxLength: 128
+      description:
+        type: string
+        maxLength: 256
+      created_at:
+        type: string
+        format: date
+      owner_id:
+        type: string
+        format: uuid
+      creator_id:
+        type: string
+        format: uuid
+      permissions:
+        type: array
+        items:
+          type: string
+          maxLength: 128
+        maxItems: 100
+      stats:
+        $ref: "#/definitions/RoleStats"
+  Role:
+    type: object
+    required:
+    - name
+    - permissions
+    - description
+    properties:
+      name:
+        type: string
+        maxLength: 128
+      description:
+        type: string
+        maxLength: 256
+      permissions:
+        type: array
+        items:
+          type: string
+          maxLength: 128
+  RoleMapping:
+    type: object
+    required:
+    - role_id
+    properties:
+      role_mapping_id:
+        description: Role Mapping Id
+        type: string
+        format: uuid
+      role_id:
+        description: Role assigned to a User
+        type: string
+        format: uuid
+      access_all_targets:
+        description: User has access to all Targets
+        type: boolean
+        default: false
+      target_group_ids:
+        description: Target Groups available to a User
+        type: array
+        items:
+          type: string
+          format: uuid
+  RoleMappingList:
+    type: object
+    required:
+    - role_mappings
+    properties:
+      role_mappings:
+        type: array
+        items:
+          $ref: "#/definitions/RoleMapping"
+  RoleMappingIdList:
+    type: object
+    required:
+    - role_mapping_ids
+    properties:
+      role_mapping_ids:
+        type: array
+        items:
+          type: string
+          format: uuid
+  UserGroupRoleMappings:
+    type: object
+    required:
+    - user_group_id
+    - role_ids
+    properties:
+      user_group_id:
+        type: string
+        format: uuid
+      role_mappings:
+        type: array
+        items:
+          $ref: "#/definitions/RoleMapping"
+  PermissionsList:
+    type: object
+    properties:
+      permissions:
+        type: array
+        items:
+          $ref: "#/definitions/PermissionDetailEntry"
+  UserGroupsList:
+    description: Paginated list of User Groups
+    type: object
+    properties:
+      user_groups:
+        type: array
+        items:
+          $ref: "#/definitions/UserGroupDetails"
+      pagination:
+        $ref: "#/definitions/PaginationExt"
+    required:
+    - user_groups
+  UserGroupDetails:
+    type: object
+    properties:
+      user_group_id:
+        type: string
+        format: uuid
+      name:
+        type: string
+        maxLength: 128
+      description:
+        type: string
+        maxLength: 256
+      created:
+        type: string
+        format: date
+      owner_id:
+        type: string
+        format: uuid
+      creator_id:
+        type: string
+        format: uuid
+      user_ids:
+        type: array
+        items:
+          type: string
+          format: uuid
+      role_mappings:
+        type: array
+        items:
+          $ref: "#/definitions/RoleMapping"
+      stats:
+        $ref: "#/definitions/UserGroupStats"
+  UserGroupStats:
+    type: object
+    properties:
+      user_count:
+        type: integer
+  UserGroup:
+    type: object
+    required:
+    - name
+    - description
+    properties:
+      name:
+        type: string
+        maxLength: 128
+      description:
+        type: string
+        maxLength: 256
+      role_mappings:
+        type: array
+        items:
+          $ref: "#/definitions/RoleMapping"
+      user_ids:
+        type: array
+        items:
+          type: string
+          format: uuid
+  UserToUserGroupDetails:
+    type: object
+    properties:
+      user_ids:
+        type: array
+        items:
+          type: string
+          format: uuid
+      user_group_id:
+        type: string
+        format: uuid
+  PluginInstances:
+    type: object
+    properties:
+      instances:
+        type: array
+        items:
+          $ref: "#/definitions/PluginInstance"
+  PluginInstance:
+    type: object
+    properties:
+      display_name:
+        type: string
+      plugin_id:
+        type: string
+        format: uuid
+      instance_id:
+        type: string
+        format: uuid
+      created_on:
+        type: string
+        format: date
+parameters:
+  sensorTypeParameter:
+    name: sensor_type
+    description: AcuSensor type
+    in: path
+    required: true
+    type: string
+    enum:
+    - php
+    - net
+    - java
+    - java3
+    - node
+    - net3
+    -
+
+  sortParameter:
+    name: s
+    in: query
+    required: false
+    type: string
+  cursorParameter:
+    name: c
+    description: >
+      Cursor indicating which index is the head of the
+      next batch of elements (generally coupled with
+      a limit).
+    in: query
+    required: false
+    type: string
+  limitParameter:
+    name: l
+    description: >
+      Maximum number of items returned. Parameter defaults
+      to 100 if not passed. Limit ranges accepted are less
+      than 100 or greater than 1 (1 < `limit` < 100).
+    in: query
+    required: false
+    type: integer
+    default: 100
+    maximum: 100
+    minimum: 1
+  viewTypeParameter:
+    name: v
+    description: View type
+    in: query
+    required: false
+    type: string
+    enum:
+    - criticality
+    - default
+  groupTypeParameter:
+    name: group_by
+    description: Group by type
+    in: query
+    required: false
+    type: string
+    default: "fqdn"
+    enum:
+    - fqdn
+    - target
+  queryParameter:
+    name: q
+    description: >
+      Query to filter results based on a number of filters.
+
+      #### List of Filters:
+
+      ----
+
+      ##### Scans
+
+      - target: Specific target to filter for. Only accepts
+      filtering of single targets.
+        + `TARGET_ID` (UUID - "11111111-1111-1111-1111-111111111111")
+
+      - threat: Level of severity to filter scans by.
+      Do note that multiple threats can be added
+      and are comma-separated (e.g. `?threat=3,2`)
+        + 4: Critical
+        + 3: High
+        + 2: Medium
+        + 1: Low
+        + 0: Informational
+
+      - business_criticality: Level of business criticality
+      to filter scans for. Multiple values can be added and
+      are comma-separated (e.g. `?business_criticality=30,10`)
+        + 30: Critical
+        + 20: High
+        + 10: Normal
+        + 0: Low
+
+      - scan_status: Scan state to filter by. Multiple values
+      can be added and are comma-separated (e.g. `?scan_status=completed,queued`)
+        + aborting
+        + completed
+        + failed
+        + processing
+        + queued
+        + scheduled
+        + starting
+
+      - profile_id: Scan type to filter scans by (e.g. Crawl Only).
+      Multiple scan types can be added and are comma-separated.
+        + `PROFILE_ID` (UUID - "11111111-1111-1111-1111-111111111111")
+
+      - group_id: Target group to filter scans by. Target groups are not
+      preset and thus are custom set for each Acunetix instance. Multiple
+      target groups can be added and are comma-separated.
+
+        + `GROUP_ID` (UUID - E.G "11111111-1111-1111-1111-111111111111")
+    in: query
+    required: false
+    type: string
+    format: search
+    maxLength: 1024
+  targetIdParameter:
+    name: target_id
+    description: Target unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  targetConfigStatusTag:
+    name: target_config_status_tag
+    in: path
+    required: true
+    type: string
+  scanResultId:
+    name: result_id
+    description: Scan result unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  allowedTargetIdParameter:
+    name: allowed_target_id
+    description: Allowed Target unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  groupIdParameter:
+    name: group_id
+    description: Group unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  notification_id:
+    name: notification_id
+    description: Notification unique identifier
+    in: path
+    required: true
+    type: string
+  scanIdParameter:
+    name: scan_id
+    description: Scan unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  technologyIdParameter:
+    name: tech_id
+    description: Technology identifier
+    in: path
+    required: true
+    type: string
+    maxLength: 128
+  issueTrackerIdParameter:
+    name: issue_tracker_id
+    description: Issue tracker unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  projectIdParameter:
+    name: project_id
+    description: The id of the issue tracker project
+    in: path
+    required: true
+    type: string
+    maxLength: 128
+  projectQIdParameter:
+    name: project_id
+    description: The id of the issue tracker project
+    in: query
+    required: true
+    type: string
+    maxLength: 128
+  reportIdParameter:
+    name: report_id
+    description: Report unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  exportIdParameter:
+    name: export_id
+    description: Export unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  locationIdParameter:
+    description: >
+      Location identifier from the crawl data.
+      Can be 0, in which case the crawl data root is referenced
+    name: loc_id
+    in: path
+    type: integer
+    format: int32
+    required: true
+    default: 0
+  vulnerabilityIdParameter:
+    name: vuln_id
+    description: Vulnerability unique identifier
+    in: path
+    type: string
+    required: true
+  vulnerabilityTypeIdParameter:
+    name: vt_id
+    description: Vulnerability Type unique identifier
+    in: path
+    type: string
+    format: uuid
+    required: true
+  sensorSecretParameter:
+    name: sensor_secret
+    description: AcuSensor secret
+    in: path
+    type: string
+    format: md5
+    required: true
+  scanningProfileId:
+    name: scanning_profile_id
+    description: Scanning Profile unique identifier
+    in: path
+    type: string
+    format: uuid
+    required: true
+  excludedHoursIdParameter:
+    name: excluded_hours_id
+    description: Excluded Hours Profile unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  taskIdParameter:
+    name: task_id
+    description: Task id
+    in: path
+    required: true
+    type: string
+    format: uuid
+  worker_id:
+    name: worker_id
+    description: Worker unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  descriptor:
+    name: descriptor
+    in: path
+    required: true
+    type: string
+  lsr_session_id:
+    name: lsr_session_id
+    description: LSR session unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  web_asset_id:
+    name: web_asset_id
+    description: Web asset unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid
+  WAFIdParameter:
+    name: waf_id
+    description: WAF unique identifier
+    in: path
+    required: true
+    type: string
+    format: uuid

@@ -37,16 +37,21 @@ services:
 
 
   acunetix:
-    # admin@admin.com
-    # Admin123
-    image: secfa/docker-awvs
-    init: true
+    build: .
     container_name: acunetix
     restart: unless-stopped
     cap_add:
       - LINUX_IMMUTABLE
     ports:
       - "13443:3443"
+    environment:
+      - ACUNETIX_EMAIL=${ACUNETIX_EMAIL}
+      - ACUNETIX_PASSWORD=${ACUNETIX_PASSWORD}
+    networks:
+      acu_net:
+        ipv4_address: 172.72.72.3
+
+
 
 volumes:
   psql:
