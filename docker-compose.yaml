@@ -19,32 +19,34 @@ services:
 
   psql:
     hostname: psql
-    build: 
-      context: ./psql
-      args:
-        POSTGRES_DB: ${POSTGRES_DB}
-        POSTGRES_PASSWD: ${POSTGRES_PASSWD}
+    image: postgres:14
     container_name: psql
-    restart: always
+    restart: on-failure
     volumes:
       - psql:/var/lib/postgresql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      TZ: Europe/Moscow
     networks:
       acu_net:
         ipv4_address: 172.72.72.2
 
+
   acunetix:
     # admin@admin.com
     # Admin123
-    image: secfa/awvs
+    image: secfa/docker-awvs
     init: true
     container_name: acunetix
     restart: unless-stopped
     cap_add:
       - LINUX_IMMUTABLE
     ports:
-      - "3443:3443"
+      - "13443:3443"
 
 volumes:
   psql:
