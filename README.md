@@ -17,13 +17,13 @@ POSTGRES_DB=acubot
 POSTGRES_PASSWD=ChangeMeLater' > .env
 
 # Build and run project
-docker compose build
-docker compose up -d # remove '-d' for seeing logs in realtime
+docker compose up --build -d
+# remove '-d' for seeing logs in realtime
 ```
 
 
 ## Support
 <details>
     <summary>btc</summary>
-	<code>bc1q90ma5sgmh39fkl29xahdh822tnf4hexxfsqguq</code>
+	<code>bc1qy0utklyuffvkz25sfx5vtydy4e0pgagmvajalc</code>
 </details>
