@@ -9,10 +9,10 @@ password=${ACUNETIX_PASSWORD}
 
 
 # HELLO from entypoint...
-/bin/sh /awvs_start.sh
+/bin/sh /awvs_start.sh &
 
 # Just testing
-sleep 10
+sleep 15
 
 
 
