@@ -14,7 +14,6 @@ from config import BOT_TOKEN
 from handlers import commands, anymsg, callbacks
 from middlewares.UserFilter import UserFilterMiddleware
 
-TOKEN = BOT_TOKEN('prod')
 
 # All handlers should be attached to the Router (or Dispatcher)
 
@@ -26,11 +25,10 @@ menu - Главная
 
 """
 
-
 dp = Dispatcher(storage=MemoryStorage())
 
 # Initialize Bot instance with default bot properties which will be passed to all API calls
-bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 
 async def main() -> None:
@@ -43,10 +41,6 @@ async def main() -> None:
     dp.include_routers(
         # main buttons
         callbacks._menu, callbacks._settings,
-
-
-        # admin buttond
-        callbacks._inviter
         )
 
 

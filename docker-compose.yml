@@ -6,6 +6,7 @@ services:
       context: ./bot
     environment:
         BOT_TOKEN: ${BOT_TOKEN}
+        FASTAPI_KEY: ${FASTAPI_KEY}
     restart: always
     depends_on:
       - api
