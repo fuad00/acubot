@@ -1,14 +1,13 @@
 
-# Acunetix API + Aiogram 3 + Docker = AcuBot ❤️
+# Docker(Acunetix + Aiogram + FastAPI) = AcuBot ❤️
 
 ## Config & Install & Run
 
-#### Installation:
+#### ⚒️ Installation:
 ```bash
 # Install docker
 apt -y update && apt -y install curl sudo git nano
-curl -fsSL https://get.docker.com -o install-docker.sh
-sudo sh install-docker.sh
+curl -sSL https://get.docker.com/ | sh
 
 # Download and configure project
 git clone https://github.com/fuad00/acubot && cd acubot
@@ -21,14 +20,14 @@ docker compose up --build -d
 ```
 
 
-## Support
+## 💰 Donations
 <details>
     <summary>btc</summary>
 	<code>bc1qy0utklyuffvkz25sfx5vtydy4e0pgagmvajalc</code>
 </details>
 
 
-## Todo
+## ✍️ TODO
 
-1. push generated acunetix api key to psql database
-2. add some bot basics and logic
+1. add some bot basics and logic
+2. Start developing fastapi
