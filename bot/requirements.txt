@@ -1,2 +1,5 @@
 aiogram
+python-dotenv
+redis
 httpx
+aiohttp-jinja2

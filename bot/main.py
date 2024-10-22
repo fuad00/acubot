@@ -1,20 +1,61 @@
+
+#!/usr/bin/python3
 import asyncio
 import logging
+import sys
+
+from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
+
+
 from config import BOT_TOKEN
-from modules import handlers, callbacks, middlewares
-from aiogram import Bot, Dispatcher, F
-from aiogram.filters.command import Command
+from handlers import commands, anymsg, callbacks
+from middlewares.UserFilter import UserFilterMiddleware
+
+TOKEN = BOT_TOKEN('prod')
+
+# All handlers should be attached to the Router (or Dispatcher)
+
+### BOTFATHER SETTINGS ###
+"""
+https://t.me/BotFather > /mybots > select your bot > Edit Commamds >
+
+menu - Главная
+
+"""
 
 
-logging.basicConfig(level=logging.INFO)       # Logging
-bot = Bot(token=BOT_TOKEN, parse_mode="HTML") # Bot object
-dp = Dispatcher()                             # Dispatcher
+dp = Dispatcher(storage=MemoryStorage())
 
-async def main():
-    dp.update.middleware.register(middlewares.NewUserMiddleware())  # Middleware checks if user allowed to use this bot
-    dp.message.register(handlers.start,   Command('start'))  # Handle '/start' command
-    dp.message.register(handlers.anymsg, F.text)  # Handle any text
+# Initialize Bot instance with default bot properties which will be passed to all API calls
+bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
-    await dp.start_polling(bot)  # Start polling
 
-asyncio.run(main())
+async def main() -> None:
+    # middlewares for all handlers (routes)
+    dp.message.middleware(UserFilterMiddleware(bot))
+    dp.callback_query.middleware(UserFilterMiddleware(bot))
+
+    dp.include_routers(commands.router, anymsg.router)
+
+    dp.include_routers(
+        # main buttons
+        callbacks._menu, callbacks._settings,
+
+
+        # admin buttond
+        callbacks._inviter
+        )
+
+
+
+
+    # And the run events dispatching
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    asyncio.run(main())

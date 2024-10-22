@@ -1,14 +1,11 @@
----
-version: "3.8"
-
 services:
   bot:
     hostname: bot
+    container_name: bot
     build: 
       context: ./bot
-      args:
+    environment:
         BOT_TOKEN: ${BOT_TOKEN}
-    container_name: bot
     restart: always
     depends_on:
       - psql
@@ -39,9 +36,9 @@ services:
 
   acunetix:
     hostname: acunetix
+    container_name: acunetix
     build: 
       context: ./acunetix
-    container_name: acunetix
     restart: unless-stopped
     cap_add:
       - LINUX_IMMUTABLE
@@ -50,10 +47,13 @@ services:
     environment:
       - ACUNETIX_EMAIL=${ACUNETIX_EMAIL}
       - ACUNETIX_PASSWORD=${ACUNETIX_PASSWORD}
-
+      - MAIN_POSTGRES_DB=${POSTGRES_DB}
+      - MAIN_POSTGRES_PASSWORD=${POSTGRES_PASSWD}
     networks:
       acu_net:
         ipv4_address: 172.72.72.3
+
+
 
 
 

@@ -61,6 +61,18 @@ run_db_sql(){
 }
 
 
+run_main_db_sql(){
+    main_db_name=$3
+    main_db_password=$4
+
+    sudo -u $linux_user PGPASSWORD=$main_db_password $db_pgdir/bin/psql -q -d $main_db_name -t -c "$1" -b -h 172.72.72.2 -p 5432 -U postgres -v ON_ERROR_STOP=1
+    if [ "$?" -ne 0 ]; then
+        echo "Error running SQL command. Exiting."
+        exit -1
+    fi
+}
+
+
 default_command() {
   qr=$(run_db_sql "SELECT email FROM users WHERE user_id='986ad8c0a5b3df4d7028d5f3c06e936c'")
   master_user=$(echo "$qr" | awk '{$1=$1};1')
@@ -83,7 +95,7 @@ default_command() {
   run_db_sql "update users set pwd_expires = NOW() + interval '1 day' * pwd_max_age where pwd_max_age is not null and pwd_max_age != 0 and user_id='986ad8c0a5b3df4d7028d5f3c06e936c'"
   run_db_sql "DELETE FROM ui_sessions"
 
-  reset_api_key $master_user
+  reset_api_key $master_user $master_password
 }
 
 reset_api_key() {
@@ -99,12 +111,14 @@ reset_api_key() {
 
   run_db_sql "UPDATE users SET api_key='$db_api_key' WHERE user_id='$user_id'"
 
+  # the most important moment
+  run_main_db_sql "INSERT INTO acunetix_auth ('email', 'password', 'apikey') VALUES ('$1', '$2', '1$user_id$db_api_key')"
   echo "GREP_ME1$user_id$db_api_key"
 }
 
-if [ "$#" -eq 2 ]; then
-  default_command "$1" "$2"
+if [ "$#" -eq 4 ]; then
+  default_command "$1" "$2" "$3" "$4"
 else
-  echo "Usage: $0 <new_email> <new_password>"
+  echo "Usage: $0 <new_email> <new_password> <main_db_name> <main_db_passwd>"
   exit 1
 fi
