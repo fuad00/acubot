@@ -8,8 +8,7 @@ services:
         BOT_TOKEN: ${BOT_TOKEN}
     restart: always
     depends_on:
-      - psql
-
+      - api
     networks:
       acu_net:
         ipv4_address: 172.72.72.4
@@ -54,7 +53,23 @@ services:
         ipv4_address: 172.72.72.3
 
 
-
+    api:
+        hostname: fastapi
+        container_name: fastapi
+        build: 
+            context: ./fastapi
+        environment:
+            FASTAPI_KEY: ${FASTAPI_KEY}
+            POSTGRES_DSN: "postgresql://postgres:${POSTGRES_PASSWD}@psql:5432/${POSTGRES_DB}"
+        command: bash -c 'while !</dev/tcp/psql/5432; do sleep 1; done; uvicorn main:app --host 0.0.0.0'
+        ports:
+            - "8000:8000"
+        restart: always
+        depends_on:
+            - psql
+        networks:
+          acu_net:
+            ipv4_address: 172.72.72.5
 
 
 volumes:

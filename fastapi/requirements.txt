@@ -1,0 +1,5 @@
+python-dotenv
+fastapi[all]
+uvicorn
+python-multipart
+asyncpg # postgres async client

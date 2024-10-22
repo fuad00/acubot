@@ -3,6 +3,9 @@
 linux_user=acunetix
 product_name=acunetix
 
+main_db_name=$3
+main_db_password=$4
+
 base_folder="/home/$linux_user/.$product_name"
 
 get_settings_from_ini()

@@ -2,7 +2,6 @@
 .venv
 .DS_Store
 __pycache__/
-fastapi/
 bot_old/
 bot/*
 stuff/
