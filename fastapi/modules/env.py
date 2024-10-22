@@ -9,6 +9,6 @@ class ENV:
             load_dotenv()
 
         self.FASTAPI_KEY = os.getenv("FASTAPI_KEY")
-        self.POSTGRES_DSN = so.getenv("POSTGRES_DSN")
-        
+        self.POSTGRES_DSN = os.getenv("POSTGRES_DSN")
+
 env = ENV()
